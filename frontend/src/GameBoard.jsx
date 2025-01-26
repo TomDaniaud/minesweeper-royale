@@ -74,25 +74,21 @@ const GameBoard = () => {
   }
 
   const handleClick = (x, y) => {
-    if (dig) {
-      if (grid[x][y] === -1) {
-        socket.emit("revealCell", { x, y });
-      } else if (grid[x][y] !== 0) {
-        var data = getNeighbors(x,y);
-        if (grid[x][y] <= data.flags) {
-          data.neighbors.forEach(cell => {
-            socket.emit("revealCell", { x:cell[0], y:cell[1] });
-          });
-        }
+    if (dig && grid[x][y] === -1) { // unknown cell
+      socket.emit("revealCell", { x, y });
+    } else if (!dig && grid[x][y] === -1 || grid[x][y] === 9) { // place or remove flag
+      const updatedGrid = [...grid];
+      updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
+      console.log("Updated grid for cell:", x, y, updatedGrid[x][y]);
+      setGrid(updatedGrid);
+    } else if (grid[x][y] !== 0) {
+      var data = getNeighbors(x,y);
+      if (grid[x][y] <= data.flags) { // dig around known cell
+        data.neighbors.forEach(cell => {
+          socket.emit("revealCell", { x:cell[0], y:cell[1] });
+        });
       }
-    } else {
-      if (grid[x][y] === -1 || grid[x][y] === 9) {
-        const updatedGrid = [...grid];
-        updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
-        console.log("Updated grid for cell:", x, y, updatedGrid[x][y]);
-        setGrid(updatedGrid);
-      }
-    } 
+    }
   };
 
   const toggleDig = () => {
