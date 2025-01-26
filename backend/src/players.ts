@@ -1,10 +1,14 @@
-let playerList = {};
+export interface Player {
+  lives: number;
+}
 
-function addPlayer(id) {
+let playerList: Record<string, Player>  = {};
+
+function addPlayer(id: number) {
   playerList[id] = { lives: 3 };
 }
 
-function removePlayer(id) {
+function removePlayer(id: number) {
   delete playerList[id];
 }
 

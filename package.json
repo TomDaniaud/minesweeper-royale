@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "private": true,
-  "workspaces": ["backend", "frontend"],
   "author": "Pl4y3ur",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "@types/react": "^19.0.8",
+    "typescript": "^5.7.3"
+  }
 }

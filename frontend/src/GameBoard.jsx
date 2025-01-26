@@ -36,8 +36,9 @@ const GameBoard = () => {
       } else {
         setGrid((prevGrid) => {
           const newGrid = [...prevGrid];
-          newGrid[data.x][data.y] = data.value;
-          console.log(newGrid)
+          data.cells.forEach( cell => {
+            newGrid[cell.x][cell.y] = cell.value;
+          });
           return newGrid;
         });
       }
@@ -63,11 +64,9 @@ const GameBoard = () => {
             <Graphics
               draw={(g) => {
                 g.clear();
-                g.beginFill(cell === -1 ? 0xcccccc : 0xffffff); // Couleur de la cellule
+                g.beginFill(cell === -1 ? 0xcccccc : 0xffffff);
                 g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 g.endFill();
-
-                // Ajout de la bordure noire
                 g.lineStyle(1, 0x000000);
                 g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
               }}
