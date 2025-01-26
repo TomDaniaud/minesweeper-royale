@@ -7,6 +7,7 @@ const socket = io("http://localhost:3000");
 
 const CELL_SIZE = 30;
 const GRID_SIZE = 10;
+const DIRS = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
 
 const GameBoard = () => {
   const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
@@ -54,9 +55,36 @@ const GameBoard = () => {
     };
   }, []);
 
+  const getNeighbors = (x, y) => {
+    var neighbors = [];
+    var flags = 0;
+    var dx, dy;
+    DIRS.forEach(d => {
+      dx = x + d[0];
+      dy = y + d[1];
+      if (-1 < dx && dx < GRID_SIZE && -1 < dy && dy < GRID_SIZE){
+        if (grid[dx][dy] === -1) {
+          neighbors.push([dx,dy]);
+        } else if (grid[dx][dy] === 9) {
+          flags++;
+        }
+      }
+    });
+    return {neighbors, flags};
+  }
+
   const handleClick = (x, y) => {
     if (dig) {
-      socket.emit("revealCell", { x, y });
+      if (grid[x][y] === -1) {
+        socket.emit("revealCell", { x, y });
+      } else if (grid[x][y] !== 0) {
+        var data = getNeighbors(x,y);
+        if (grid[x][y] <= data.flags) {
+          data.neighbors.forEach(cell => {
+            socket.emit("revealCell", { x:cell[0], y:cell[1] });
+          });
+        }
+      }
     } else {
       if (grid[x][y] === -1 || grid[x][y] === 9) {
         const updatedGrid = [...grid];
@@ -87,7 +115,6 @@ const GameBoard = () => {
                   if (cell === -1){
                     g.beginFill(0xcccccc);
                   } else if (cell === 9){
-                    console.log('here')
                     g.beginFill(0xe9962b);
                   } else {
                     g.beginFill(0xffffff);
