@@ -10,6 +10,8 @@ const GRID_SIZE = 10;
 
 const GameBoard = () => {
   const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
+  const [dig, setDig] = useState(true);
+
   useEffect(() => {
     console.log("Connecting to WebSocket...");
 
@@ -53,43 +55,69 @@ const GameBoard = () => {
   }, []);
 
   const handleClick = (x, y) => {
-    socket.emit("revealCell", { x, y });
+    if (dig) {
+      socket.emit("revealCell", { x, y });
+    } else {
+      if (grid[x][y] === -1 || grid[x][y] === 9) {
+        const updatedGrid = [...grid];
+        updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
+        console.log("Updated grid for cell:", x, y, updatedGrid[x][y]);
+        setGrid(updatedGrid);
+      }
+    } 
+  };
+
+  const toggleDig = () => {
+    setDig((prevState) => !prevState);
   };
 
   return (
-    <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE}>
-      {grid.map((row, x) =>
-        row.map((cell, y) => (
-          <React.Fragment key={`${x}-${y}`}>
-            <Graphics
-              draw={(g) => {
-                g.clear();
-                g.beginFill(cell === -1 ? 0xcccccc : 0xffffff);
-                g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-                g.endFill();
-                g.lineStyle(1, 0x000000);
-                g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-              }}
-              interactive
-              pointerdown={() => handleClick(x, y)}
-            />
-            {!(cell === -1 || cell === 0) && (
-              <Text
-                text={cell.toString()}
-                x={x * CELL_SIZE + CELL_SIZE / 2}
-                y={y * CELL_SIZE + CELL_SIZE / 2}
-                anchor={0.5}
-                style={{
-                  fontSize: 16,
-                  fill: 0x000000,
-                  fontWeight: "bold",
+    <div>
+      <button onClick={toggleDig} style={{ marginBottom: '10px' }}>
+        {dig ? "DIG" : "FLAG"}
+      </button>
+
+      <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE}>
+        {grid.map((row, x) =>
+          row.map((cell, y) => (
+            <React.Fragment key={`${x}-${y}`}>
+              <Graphics
+                draw={(g) => {
+                  g.clear();
+                  if (cell === -1){
+                    g.beginFill(0xcccccc);
+                  } else if (cell === 9){
+                    console.log('here')
+                    g.beginFill(0xe9962b);
+                  } else {
+                    g.beginFill(0xffffff);
+                  }
+                  g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                  g.endFill();
+                  g.lineStyle(1, 0x000000);
+                  g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }}
+                interactive
+                pointerdown={() => handleClick(x, y)}
               />
-            )}
-          </React.Fragment>
-        ))
-      )}
-    </Stage>
+              {!(cell === -1 || cell === 0 || cell === 9) && (
+                <Text
+                  text={cell.toString()}
+                  x={x * CELL_SIZE + CELL_SIZE / 2}
+                  y={y * CELL_SIZE + CELL_SIZE / 2}
+                  anchor={0.5}
+                  style={{
+                    fontSize: 16,
+                    fill: 0x000000,
+                    fontWeight: "bold",
+                  }}
+                />
+              )}
+            </React.Fragment>
+          ))
+        )}
+      </Stage>
+    </div>
   );
 };
 
