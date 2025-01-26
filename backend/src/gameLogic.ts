@@ -13,7 +13,7 @@ let solveGrid = <Grid>[];
 let bombs = new Set<String>();
 
 const GRID_SIZE = 10;
-const NB_BOMBS = 20;
+const NB_BOMBS = 10;
 const DIRS: [number, number][] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
 
 function initializeGrid(): void {
@@ -66,9 +66,9 @@ function getCells(x: number, y: number) {
     if (visited.has(`${nx},${ny}`))
       continue;
     res.push({x: nx, y: ny, value: cell});
+    visited.add(`${nx},${ny}`);
     if (cell !== 0)
       continue;
-    visited.add(`${nx},${ny}`);
     DIRS.forEach(d => {
       dx = nx + d[0];
       dy = ny + d[1];
