@@ -8,7 +8,8 @@ const GRID_SIZE = 10;
 const NB_BOMBS = 5;
 
 function initializeGrid() {
-  grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
+  grid = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1));
+  bombs.clear()
   for (let i = 0; i < NB_BOMBS; i++) {
     var pos;
     do {
@@ -21,7 +22,6 @@ function initializeGrid() {
       return countNeighbors(i, j);
     });
   });
-  console.log(solveGrid)
 }
 
 function startGame() {
@@ -47,7 +47,6 @@ function countNeighbors(x, y) {
 }
 
 function revealCell(playerId, x, y) {
-  console.log(`Revealing cell for player ${playerId}: (${x}, ${y})`);
   if (bombs.has(`${x},${y}`)) {
     players.removePlayer(playerId);
     return { eliminated: true, playerId };

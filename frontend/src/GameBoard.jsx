@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Stage, Graphics } from "@pixi/react";
+import { Stage, Graphics, Text } from "@pixi/react";
 import "@pixi/events";
 import io from "socket.io-client";
 
@@ -9,7 +9,7 @@ const CELL_SIZE = 30;
 const GRID_SIZE = 10;
 
 const GameBoard = () => {
-  const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0)));
+  const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
   useEffect(() => {
     console.log("Connecting to WebSocket...");
 
@@ -37,6 +37,7 @@ const GameBoard = () => {
         setGrid((prevGrid) => {
           const newGrid = [...prevGrid];
           newGrid[data.x][data.y] = data.value;
+          console.log(newGrid)
           return newGrid;
         });
       }
@@ -55,20 +56,38 @@ const GameBoard = () => {
   };
 
   return (
-    <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE} >
+    <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE}>
       {grid.map((row, x) =>
         row.map((cell, y) => (
-          <Graphics
-            key={`${x}-${y}`}
-            draw={(g) => {
-              g.clear();
-              g.beginFill(cell === 0 ? 0xcccccc : 0xffffff);
-              g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-              g.endFill();
-            }}
-            interactive
-            pointerdown={() => handleClick(x, y)}
-          />
+          <React.Fragment key={`${x}-${y}`}>
+            <Graphics
+              draw={(g) => {
+                g.clear();
+                g.beginFill(cell === -1 ? 0xcccccc : 0xffffff); // Couleur de la cellule
+                g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                g.endFill();
+
+                // Ajout de la bordure noire
+                g.lineStyle(1, 0x000000);
+                g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+              }}
+              interactive
+              pointerdown={() => handleClick(x, y)}
+            />
+            {!(cell === -1 || cell === 0) && (
+              <Text
+                text={cell.toString()}
+                x={x * CELL_SIZE + CELL_SIZE / 2}
+                y={y * CELL_SIZE + CELL_SIZE / 2}
+                anchor={0.5}
+                style={{
+                  fontSize: 16,
+                  fill: 0x000000,
+                  fontWeight: "bold",
+                }}
+              />
+            )}
+          </React.Fragment>
         ))
       )}
     </Stage>
