@@ -1,0 +1,9 @@
+{
+  "name": "minesweeper-royale",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "author": "Pl4y3ur",
+  "license": "ISC"
+}
