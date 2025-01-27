@@ -13,11 +13,11 @@ let solveGrid = <Grid>[];
 let bombs = new Set<String>();
 
 const GRID_SIZE = 10;
-const NB_BOMBS = 10;
+const NB_BOMBS = 15;
 const DIRS: [number, number][] = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
 
 function initializeGrid(): void {
-  grid = Array(GRID_SIZE).fill(Array(GRID_SIZE).fill(-1));
+  grid = Array(GRID_SIZE).fill(0).map(() => Array(GRID_SIZE).fill(-1));
   bombs.clear()
   for (let i = 0; i < NB_BOMBS; i++) {
     var pos;
@@ -34,9 +34,27 @@ function initializeGrid(): void {
 }
 
 function startGame() {
-  initializeGrid();
-  console.log(bombs);
+  if (grid.length === 0){
+    initializeGrid();
+    selectStartCell();
+    console.log(bombs);
+  }
   return { grid, players: players.getPlayers() };
+}
+
+function selectStartCell() {
+  var choice = [];
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      if (solveGrid[i][j] === 0)
+        choice.push([i,j]);
+    }
+  }
+  var [x,y] = choice[Math.floor(Math.random()*choice.length)];
+  getCells(x,y).forEach(cell => {
+    console.log()
+    grid[cell.x][cell.y] = cell.value;
+  });
 }
 
 function countNeighbors(x: number, y: number) {
