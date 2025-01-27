@@ -1,7 +1,11 @@
 import { GRID_SIZE, DIRS } from "../config/constants";
 
 export const countRemainingCells = (grid) => {
-  return grid.flat().filter((cell) => cell === -1).length;
+  return grid.flat().filter((cell) => cell === -1 || cell === 9).length;
+};
+
+export const countFlags = (grid) => {
+  return grid.flat().filter((cell) => cell === 9).length;
 };
 
 export const getNeighbors = (x, y, grid) => {
@@ -16,3 +20,13 @@ export const getNeighbors = (x, y, grid) => {
   });
   return { neighbors, flags };
 };
+
+export const getRemainingCells = (grid) => {
+  var cells = [];
+  for (let x = 0; x < GRID_SIZE; x++) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (grid[x][y] === -1 || grid[x][y] === 9) cells.push(`${x},${y}`);
+    }
+  }
+  return cells;
+}

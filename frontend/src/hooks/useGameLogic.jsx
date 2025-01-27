@@ -1,25 +1,29 @@
 import { useState, useEffect } from "react";
-import { countRemainingCells, getNeighbors } from "../utils/gridHelpers";
+import { countFlags, countRemainingCells, getNeighbors, getRemainingCells,  } from "../utils/gridHelpers";
+import { NB_BOMBS } from "../config/constants";
 
-const useGameLogic = (initialGrid) => {
-  const [grid, setGrid] = useState(initialGrid);
+const useGameLogic = (grid, setGrid, socket) => {
   const [dig, setDig] = useState(true);
-  const [placeFlags, updateFlags] = useState(0);
-  const [remainingCells, setRemaining] = useState(countRemainingCells(initialGrid));
+  const [placeFlags, setFlags] = useState(countFlags(grid));
+  const [remainingCells, setRemaining] = useState(countRemainingCells(grid));
 
   useEffect(() => {
     setRemaining(countRemainingCells(grid));
+    setFlags(countFlags(grid));
   }, [grid]);
+
+  useEffect(() => {
+    if (remainingCells === NB_BOMBS) isGridFinish();
+  }, [remainingCells])
 
   const toggleDig = () => setDig((prev) => !prev);
 
-  const handleClick = (x, y, socket) => {
+  const handleClick = (x, y) => {
     if (dig && grid[x][y] === -1) {  // unknown cell
       socket.emit("revealCell", { x, y });
     } else if (!dig && (grid[x][y] === -1 || grid[x][y] === 9)) { // place or remove flag
       const updatedGrid = [...grid];
       updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
-      updateFlags((prev) => (updatedGrid[x][y] === 9 ? prev + 1 : prev - 1));
       setGrid(updatedGrid);
     } else if (grid[x][y] !== 0) {
       var data = getNeighbors(x,y, grid);
@@ -28,7 +32,11 @@ const useGameLogic = (initialGrid) => {
     }
   };
 
-  return { grid, setGrid, dig, toggleDig, handleClick, placeFlags, remainingCells };
+  const isGridFinish = () => {
+    socket.emit("isGridValid", {cells: getRemainingCells(grid)});
+  }
+
+  return { dig, toggleDig, handleClick, placeFlags, remainingCells };
 };
 
 export default useGameLogic;

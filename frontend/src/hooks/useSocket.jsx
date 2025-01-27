@@ -9,6 +9,11 @@ const useSocket = (setGrid) => {
   useEffect(() => {
     console.log("Connecting to WebSocket...");
 
+    if (socket.connected) {
+      console.log("Socket already connected");
+      socket.emit("requestGameState");
+    }
+
     socket.on("connect", () => {
       console.log("Connected to WebSocket");
       setIsConnected(true);
@@ -24,8 +29,12 @@ const useSocket = (setGrid) => {
     });
 
     socket.on("gameUpdate", (data) => {
-      if (data.eliminated) alert("You lost !");
-      else {
+      if (data.eliminated) {
+        alert("You lost !!");
+      } else if (data.win) {
+        alert('You win !!')
+        setGrid([...data.grid.map(row => [...row])]);
+      } else if (data.cells) {
         setGrid((prevGrid) => {
           const newGrid = [...prevGrid];
           data.cells.forEach(cell => (newGrid[cell.x][cell.y] = cell.value));

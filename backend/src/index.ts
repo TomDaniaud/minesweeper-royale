@@ -3,8 +3,7 @@ import { Socket } from "socket.io";
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const gameLogic = require("./gameLogic");
-const players = require("./players");
+const gameManager = require("./gameManager");
 
 const app = express();
 const server = http.createServer(app);
@@ -17,13 +16,19 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("requestGameState", () => {
     console.log(`Sending gameState to ${socket.id}`);
-    const initialGameState = gameLogic.startGame();
+    const initialGameState = gameManager.startGame(socket.id);
     socket.emit("gameState", initialGameState);
   });
 
   socket.on("revealCell", ({ x, y }) => {
     console.log(`Received revealCell event from ${socket.id}: (${x}, ${y})`);
-    const result = gameLogic.revealCell(socket.id, x, y);
+    const result = gameManager.revealCell(socket.id, x, y);
+    io.emit("gameUpdate", result);
+  });
+
+  socket.on("isGridValid", ({ cells }) => {
+    console.log(`Received isGridValid event from ${socket.id}`);
+    const result = gameManager.goToNextLevel(socket.id, cells);
     io.emit("gameUpdate", result);
   });
 

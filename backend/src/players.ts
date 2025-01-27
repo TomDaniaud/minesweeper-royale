@@ -1,19 +1,31 @@
 export interface Player {
-  lives: number;
+  level: number;
+  progress: number;
+  eliminated: boolean;
 }
 
 let playerList: Record<string, Player>  = {};
 
-function addPlayer(id: number) {
-  playerList[id] = { lives: 3 };
+export function addPlayer(id: string) {
+  playerList[id] = { level: 0, progress: 0, eliminated: false };
 }
 
-function removePlayer(id: number) {
+export function removePlayer(id: string) {
   delete playerList[id];
 }
 
-function getPlayers() {
+export function getAllPlayers() {
   return playerList;
 }
 
-module.exports = { addPlayer, removePlayer, getPlayers };
+export function getPlayer(id: string) {
+  return playerList[id];
+}
+
+export function setPlayerEliminated(id: string) {
+  playerList[id].eliminated = true;
+}
+
+export function incrPlayerLevel(id: string) {
+  playerList[id].level++;
+}
