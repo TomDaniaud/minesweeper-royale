@@ -33,7 +33,6 @@ function goToNextLevel(playerId: string, lastCells: String[]) {
   });
   incrPlayerLevel(playerId);
   var newLevel = getPlayer(playerId).level;
-  console.log(newLevel, games.length)
   gameExist(newLevel);
   return {win: true, grid: getGame(newLevel).grid};
 }

@@ -23,13 +23,13 @@ io.on("connection", (socket: Socket) => {
   socket.on("revealCell", ({ x, y }) => {
     console.log(`Received revealCell event from ${socket.id}: (${x}, ${y})`);
     const result = gameManager.revealCell(socket.id, x, y);
-    io.emit("gameUpdate", result);
+    socket.emit("gameUpdate", result);
   });
 
   socket.on("isGridValid", ({ cells }) => {
     console.log(`Received isGridValid event from ${socket.id}`);
     const result = gameManager.goToNextLevel(socket.id, cells);
-    io.emit("gameUpdate", result);
+    socket.emit("gameUpdate", result);
   });
 
   socket.on("disconnect", () => {
