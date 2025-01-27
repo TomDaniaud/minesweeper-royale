@@ -11,11 +11,15 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: "http://localhost:5173" }
 });
+
 io.on("connection", (socket: Socket) => {
   console.log(`Player connected: ${socket.id}`);
 
-  const initialGameState = gameLogic.startGame()
-  socket.emit("gameState", initialGameState);
+  socket.on("requestGameState", () => {
+    console.log(`Sending gameState to ${socket.id}`);
+    const initialGameState = gameLogic.startGame();
+    socket.emit("gameState", initialGameState);
+  });
 
   socket.on("revealCell", ({ x, y }) => {
     console.log(`Received revealCell event from ${socket.id}: (${x}, ${y})`);

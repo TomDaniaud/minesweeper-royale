@@ -34,14 +34,13 @@ function initializeGrid(): void {
 }
 
 function startGame() {
-  if (grid.length === 0){
+  if (grid.length === 0 || grid.some(row => row.length === 0)) {
+    console.log("Grid is empty, initializing...");
     initializeGrid();
     selectStartCell();
-    console.log(bombs);
   }
-  return { grid, players: players.getPlayers() };
+  return { grid: [...grid], players: players.getPlayers() }; // ✅ Retourne une copie pour éviter les mutations involontaires.
 }
-
 function selectStartCell() {
   var choice = [];
   for (let i = 0; i < GRID_SIZE; i++) {

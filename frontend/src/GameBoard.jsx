@@ -7,17 +7,26 @@ const socket = io("http://localhost:3000");
 
 const CELL_SIZE = 30;
 const GRID_SIZE = 10;
+const NB_CELLS = GRID_SIZE * GRID_SIZE;
+const NB_BOMBS = 15;
 const DIRS = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]];
 
 const GameBoard = () => {
   const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
   const [dig, setDig] = useState(true);
+  const [placeFlags, updateFlags] = useState(0);
+  const [remainingCells, setRemaining] = useState(NB_CELLS);
+
+  useEffect(() => {
+    setRemaining(countRemainingCells(grid));
+  }, [grid]);
 
   useEffect(() => {
     console.log("Connecting to WebSocket...");
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket");
+      socket.emit("requestGameState"); 
     });
 
     socket.on("connect_error", (err) => {
@@ -29,7 +38,12 @@ const GameBoard = () => {
     });
 
     socket.on("gameState", (data) => {
-      setGrid(data.grid);
+      console.log("Received initial gameState:", data.grid);
+      if (!data.grid || data.grid.length === 0) {
+        console.warn("Invalid grid received, keeping default grid.");
+        return; // 🔴 Ne met pas à jour si la grille reçue est vide
+      }
+      setGrid([...data.grid.map(row => [...row])]);
     });
 
     socket.on("gameUpdate", (data) => {
@@ -42,7 +56,7 @@ const GameBoard = () => {
           data.cells.forEach( cell => {
             newGrid[cell.x][cell.y] = cell.value;
           });
-          return newGrid;
+          return [...newGrid.map(row => [...row])];;
         });
       }
     });
@@ -73,12 +87,29 @@ const GameBoard = () => {
     return {neighbors, flags};
   }
 
+  const countRemainingCells = (currentGrid) => {
+    let res = 0;
+    currentGrid.forEach((col) => {
+      col.forEach((cell) => {
+        if (cell === -1) {
+          ++res;
+        }
+      });
+    });
+    return res;
+  }; 
+
   const handleClick = (x, y) => {
     if (dig && grid[x][y] === -1) { // unknown cell
       socket.emit("revealCell", { x, y });
     } else if (!dig && grid[x][y] === -1 || grid[x][y] === 9) { // place or remove flag
       const updatedGrid = [...grid];
       updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
+      if (updatedGrid[x][y] === 9) {
+        updateFlags((prevStat) => ++prevStat);
+      } else {
+        updateFlags((prevStat) => --prevStat);
+      }
       console.log("Updated grid for cell:", x, y, updatedGrid[x][y]);
       setGrid(updatedGrid);
     } else if (grid[x][y] !== 0) {
@@ -97,6 +128,12 @@ const GameBoard = () => {
 
   return (
     <div>
+      <p>
+        {NB_CELLS-remainingCells}/{NB_CELLS}
+      </p>
+      <p>
+        {NB_BOMBS-placeFlags}
+      </p>
       <button onClick={toggleDig} style={{ marginBottom: '10px' }}>
         {dig ? "DIG" : "FLAG"}
       </button>
