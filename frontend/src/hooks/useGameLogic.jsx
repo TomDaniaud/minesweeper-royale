@@ -21,11 +21,19 @@ const useGameLogic = (initialGrid, socket) => {
     if (!socket) return;
 
     socket.on("gameState", (data) => {
-      if (data.grid) setGrid([...data.grid.map(row => [...row])]);
+      if (data.error === "NO_MATCH") {
+        console.warn("No match assigned! Redirecting...");
+        window.location.href = "/";
+      } else if (data.grid){
+        setGrid([...data.grid.map(row => [...row])]);
+      }
     });
 
     socket.on("gameUpdate", (data) => {
-      if (data.eliminated) {
+      if (data.error === "NO_MATCH") {
+        console.warn("No match assigned! Redirecting...");
+        window.location.href = "/";
+      } else if (data.eliminated) {
         alert("You lost !!");
       } else if (data.cells) {
         setGrid((prevGrid) => {
@@ -36,7 +44,10 @@ const useGameLogic = (initialGrid, socket) => {
       }
 
     socket.on("gameStatus", (data) => {
-      if (data.eliminated) {
+      if (data.error === "NO_MATCH") {
+        console.warn("No match assigned! Redirecting...");
+        window.location.href = "/";
+      } else if (data.eliminated) {
         alert("You lost !!");
       } else if (data.win) {  
         // alert('You win !!')

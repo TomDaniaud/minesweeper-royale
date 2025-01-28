@@ -17,6 +17,8 @@ io.on("connection", (socket: Socket) => {
   socket.on("joinQueue", () => {
     var playerId = socket.id;
     var match = findMatch(playerId);
+    if (match === undefined) // player already in a queue
+      return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
     socket.emit("updateQueue", match.nbPlayers);
     if (canLaunchMatch(match.id)){

@@ -4,16 +4,24 @@ import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToN
 
 type Matchs = Match[];
 let matchs: Matchs = [];
-let playerAssign: Record<string, number> = {};
+let playerAssigment: Record<string, number> = {};
 
 setInterval(() => {
     matchs.forEach(match => checkTimeouts(match));
 }, 1000);
 
-function getMatch(id: number) {
-    if (id < -1 || id >= matchs.length){
-        console.warn('ERROR IN MATCH ID', id, matchs.length-1);
-        return matchs[0];
+function getPlayerAssignment(playerId: string): number | null {
+    if (playerAssigment[playerId] === undefined) {
+        console.warn(`ERROR: Player ${playerId} has no match assigned.`);
+        return null; // Retourne `null` au lieu de `undefined`
+    }
+    return playerAssigment[playerId];
+}
+
+function getMatch(id: number | null): Match | null {
+    if (id === null || id < 0 || id >= matchs.length) {
+        console.warn(`ERROR: Invalid match ID: ${id}`);
+        return null;
     }
     return matchs[id];
 }
@@ -21,8 +29,10 @@ function getMatch(id: number) {
 export function findMatch(playerId: string) {
     if (matchs.length === 0 || matchs[matchs.length-1].launch === true)
         matchs.push(createNewMatch(matchs.length));
+    if (playerAssigment[playerId] !== undefined)
+        return;
     addPlayerInMatch(matchs[matchs.length-1], playerId);
-    playerAssign[playerId] = matchs.length-1;
+    playerAssigment[playerId] = matchs.length-1;
     return matchs[matchs.length-1];
 }
 
@@ -38,10 +48,13 @@ export function canLaunchMatch(matchId: number) {
 }
 
 export function havePlayerWinGame(playerId: string, lastCells: String[]) {
-    var match = getMatch(playerAssign[playerId])!;
+    const matchId = getPlayerAssignment(playerId);
+    if (matchId === null) return { error: "NO_MATCH" };
+    const match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
     var player = getPlayer(match.players, playerId);
     if (player.eliminated)
-        return {eliminated: false};
+        return {eliminated: true};
     var level = player.level;
     var win = isGameWin(match.games[level].bombs, lastCells);
     if (!win)
@@ -53,11 +66,15 @@ export function havePlayerWinGame(playerId: string, lastCells: String[]) {
 }
 
 export function playPlayerAction(playerId: string, x: number, y: number){
-    var match = getMatch(playerAssign[playerId]);
+    const matchId = getPlayerAssignment(playerId);
+    if (matchId === null) return { error: "NO_MATCH" };
+    const match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
     var player = getPlayer(match.players, playerId);
     var game = match.games[player.level];
     var cells = revealCells(game.bombs, game.solveGrid, x, y);
     if (cells.length === 0 || player.eliminated === true) { // Player lost
+        delete playerAssigment[playerId];
         setPlayerEliminated(match.players, playerId);
         return { eliminated: true };
     }
@@ -65,5 +82,9 @@ export function playPlayerAction(playerId: string, x: number, y: number){
 }
 
 export function getFirstGame(playerId: string) {
-    return {grid: getMatch(playerAssign[playerId]).games[0].grid};
+    const matchId = getPlayerAssignment(playerId);
+    if (matchId === null) return { error: "NO_MATCH" };
+    const match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
+    return {grid: match.games[0].grid};
 }
