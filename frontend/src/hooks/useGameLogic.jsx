@@ -21,6 +21,7 @@ const useGameLogic = (initialGrid, socket) => {
     if (!socket) return;
 
     socket.on("gameState", (data) => {
+      console.log("Game State Received:", data); // ✅ DEBUG : Vérifier qu'on reçoit la grille
       if (data.error === "NO_MATCH") {
         console.warn("No match assigned! Redirecting...");
         window.location.href = "/";

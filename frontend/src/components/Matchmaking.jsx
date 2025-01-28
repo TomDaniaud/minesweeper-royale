@@ -13,7 +13,6 @@ const Matchmaking = () => {
 
     socket.on("matchFound", ({ roomId }) => {
       navigate(`/game/${roomId}`);
-      socket.emit("requestGameState");
     });
 
     return () => {
@@ -22,15 +21,10 @@ const Matchmaking = () => {
     };
   }, [socket, navigate]);
 
-  const joinQueue = () => {
-    socket.emit("joinQueue");
-  };
-
   return (
     <div>
       <h1>Waiting for other players...</h1>
       <p>Waiting players : {playersWaiting} / {NB_PLAYER_PER_MATCH}</p>
-      {/* <button onClick={joinQueue}>Rejoindre la partie</button> */}
     </div>
   );
 };
