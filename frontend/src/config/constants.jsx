@@ -9,16 +9,3 @@ export const DIRS = [
   [0, -1],           [0, 1], 
   [1, -1], [1, 0], [1, 1],
 ];
-
-export const CELL_STATES = {
-  HIDDEN: -1,
-  FLAGGED: 9,
-}; // États possibles d'une cellule
-
-export const SOCKET_EVENTS = {
-  CONNECT: "connect",
-  DISCONNECT: "disconnect",
-  GAME_STATE: "gameState",
-  GAME_UPDATE: "gameUpdate",
-  REVEAL_CELL: "revealCell",
-}; // Événements du WebSocket

@@ -1,5 +1,5 @@
-import {React, useState, useEffect} from "react";
-import { Stage, Graphics } from "@pixi/react";
+import {React, useEffect} from "react";
+import { Stage } from "@pixi/react";
 import useSocket from "../hooks/useSocket";
 import useGameLogic from "../hooks/useGameLogic";
 import Cell from "./Cell";

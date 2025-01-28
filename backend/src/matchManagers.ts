@@ -13,7 +13,7 @@ setInterval(() => {
 function getPlayerAssignment(playerId: string): number | null {
     if (playerAssigment[playerId] === undefined) {
         console.warn(`ERROR: Player ${playerId} has no match assigned.`);
-        return null; // Retourne `null` au lieu de `undefined`
+        return null;
     }
     return playerAssigment[playerId];
 }
