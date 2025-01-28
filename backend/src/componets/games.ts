@@ -1,12 +1,15 @@
-import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "./config/constants";
-import {countNeighbors} from "./utils/gridHelpers";
+import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "../config/constants";
+import {countNeighbors} from "../utils/gridHelpers";
 
+export type Bombs = Set<string>;
 
 export interface Game {
     id: number;
     grid: Grid;
     solveGrid: Grid;
-    bombs: Set<string>;
+    bombs: Bombs;
+    timer: number;
+    closingTime: number;
   }
 
 export function generateGame(id: number): Game {
@@ -15,7 +18,7 @@ export function generateGame(id: number): Game {
     var solveGrid = data.solveGrid;
     var bombs = data.bombs;
     selectStartCell(grid, solveGrid);
-    return { id, grid, solveGrid, bombs };
+    return { id, grid, solveGrid, bombs, timer: 15, closingTime: 0 };
 }
 
 function initializeGrid() {
@@ -79,4 +82,19 @@ export function getCells(solveGrid:Grid, x: number, y: number) {
       });
     }
     return res;
-  }
+}
+
+export function isGameWin(bombs: Bombs, cells: String[]){
+  var cellsSet = new Set<String>(cells);
+  if (bombs.size !== cellsSet.size) return false;
+    bombs.forEach(cell => {
+        if (!cellsSet.has(cell)) return false;
+    });
+  return true;
+}
+
+export function revealCells(bombs: Bombs, solvedGrid: Grid, x: number, y: number) {
+  if (bombs.has(`${x},${y}`))
+    return [];
+  return getCells(solvedGrid,x,y);
+}

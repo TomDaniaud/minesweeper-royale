@@ -7,10 +7,9 @@ import GameStatus from "./GameStatus";
 import { GRID_SIZE, CELL_SIZE } from "../config/constants";
 
 const GameBoard = () => {
-  const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
-  const socket = useSocket(setGrid);
-  const { dig, toggleDig, handleClick, placeFlags, remainingCells } = useGameLogic(grid, setGrid ,socket);
-
+  // const [grid, setGrid] = useState(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)));
+  const socket = useSocket();
+  const {grid, dig, toggleDig, handleClick, placeFlags, remainingCells } = useGameLogic(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)), socket);
 
   return (
     <div className="game-board">

@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { countFlags, countRemainingCells, getNeighbors, getRemainingCells,  } from "../utils/gridHelpers";
 import { NB_BOMBS } from "../config/constants";
 
-const useGameLogic = (grid, setGrid, socket) => {
+const useGameLogic = (initialGrid, socket) => {
+  const [grid, setGrid] = useState(initialGrid);
   const [dig, setDig] = useState(true);
-  const [placeFlags, setFlags] = useState(countFlags(grid));
-  const [remainingCells, setRemaining] = useState(countRemainingCells(grid));
+  const [placeFlags, setFlags] = useState(countFlags(initialGrid));
+  const [remainingCells, setRemaining] = useState(countRemainingCells(initialGrid));
 
   useEffect(() => {
     setRemaining(countRemainingCells(grid));
@@ -14,7 +15,42 @@ const useGameLogic = (grid, setGrid, socket) => {
 
   useEffect(() => {
     if (remainingCells === NB_BOMBS) isGridFinish();
-  }, [remainingCells])
+  }, [remainingCells]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("gameState", (data) => {
+      if (data.grid) setGrid([...data.grid.map(row => [...row])]);
+    });
+
+    socket.on("gameUpdate", (data) => {
+      if (data.eliminated) {
+        alert("You lost !!");
+      } else if (data.cells) {
+        setGrid((prevGrid) => {
+          const newGrid = [...prevGrid];
+          data.cells.forEach(cell => (newGrid[cell.x][cell.y] = cell.value));
+          return newGrid;
+        });
+      }
+
+    socket.on("gameStatus", (data) => {
+      if (data.eliminated) {
+        alert("You lost !!");
+      } else if (data.win) {  
+        // alert('You win !!')
+        setGrid([...data.grid.map(row => [...row])]);
+      }
+    });
+    });
+
+    return () => {
+      socket.off("gameState");
+      socket.off("gameUpdate");
+      socket.off("gameStatus");
+    };
+  }, [socket]);
 
   const toggleDig = () => setDig((prev) => !prev);
 
@@ -36,7 +72,7 @@ const useGameLogic = (grid, setGrid, socket) => {
     socket.emit("isGridValid", {cells: getRemainingCells(grid)});
   }
 
-  return { dig, toggleDig, handleClick, placeFlags, remainingCells };
+  return {grid, dig, toggleDig, handleClick, placeFlags, remainingCells };
 };
 
 export default useGameLogic;

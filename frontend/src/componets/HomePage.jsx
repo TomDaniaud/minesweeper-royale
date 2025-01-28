@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <div className="home-page">
       <h1>Welcome on Minesweeper BR !</h1>
-      <button onClick={() => navigate("/game")}>🎮 Play</button>
+      <button onClick={() => navigate("/matchmaking")}>🎮 Play</button>
     </div>
   );
 };
