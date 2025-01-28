@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket";
+import { NB_PLAYER_PER_MATCH } from "../config/constants";
 
 const Matchmaking = () => {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ const Matchmaking = () => {
 
   return (
     <div>
-      <h1>En attente d'autres joueurs...</h1>
-      <p>Joueurs en attente : {playersWaiting}</p>
-      <button onClick={joinQueue}>Rejoindre la partie</button>
+      <h1>Waiting for other players...</h1>
+      <p>Waiting players : {playersWaiting} / {NB_PLAYER_PER_MATCH}</p>
+      {/* <button onClick={joinQueue}>Rejoindre la partie</button> */}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React from "react";
+import { NB_BOMBS } from "../config/constants";
 
 const GameStatus = ({ placeFlags, remainingCells }) => {
   return (
     <div className="game-status">
-      <p>🚩 Drapeaux placés : {placeFlags}</p>
-      <p>⬜ Cases restantes : {remainingCells}</p>
+      <p>💣 Bombs: {NB_BOMBS-placeFlags}</p>
+      <p>🔳 Cells: {remainingCells}</p>
     </div>
   );
 };

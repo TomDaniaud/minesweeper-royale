@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import HomePage from "./componets/HomePage";
-import GameBoard from "./componets/GameBoard";
-import Matchmaking from "./componets/Matchmaking";
+import HomePage from "./components/HomePage";
+import GameBoard from "./components/GameBoard";
+import Matchmaking from "./components/Matchmaking";
 
 function App() {
   return (

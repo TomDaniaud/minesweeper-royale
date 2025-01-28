@@ -1,6 +1,6 @@
-import { getPlayer, setPlayerEliminated } from "./componets/players";
-import { isGameWin, revealCells } from "./componets/games";
-import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./componets/matchs";
+import { getPlayer, setPlayerEliminated } from "./components/players";
+import { isGameWin, revealCells } from "./components/games";
+import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./components/matchs";
 
 type Matchs = Match[];
 let matchs: Matchs = [];
@@ -29,7 +29,7 @@ function getMatch(id: number | null): Match | null {
 export function findMatch(playerId: string) {
     if (matchs.length === 0 || matchs[matchs.length-1].launch === true)
         matchs.push(createNewMatch(matchs.length));
-    if (playerAssigment[playerId] !== undefined)
+    if (playerAssigment[playerId] !== undefined && getMatch(playerAssigment[playerId])?.launch === false)
         return;
     addPlayerInMatch(matchs[matchs.length-1], playerId);
     playerAssigment[playerId] = matchs.length-1;
