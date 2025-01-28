@@ -1,10 +1,14 @@
 import { getPlayer, setPlayerEliminated } from "./componets/players";
 import { isGameWin, revealCells } from "./componets/games";
-import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart } from "./componets/matchs";
+import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./componets/matchs";
 
 type Matchs = Match[];
 let matchs: Matchs = [];
 let playerAssign: Record<string, number> = {};
+
+setInterval(() => {
+    matchs.forEach(match => checkTimeouts(match));
+}, 1000);
 
 function getMatch(id: number) {
     if (id < -1 || id >= matchs.length){
@@ -36,6 +40,8 @@ export function canLaunchMatch(matchId: number) {
 export function havePlayerWinGame(playerId: string, lastCells: String[]) {
     var match = getMatch(playerAssign[playerId])!;
     var player = getPlayer(match.players, playerId);
+    if (player.eliminated)
+        return {eliminated: false};
     var level = player.level;
     var win = isGameWin(match.games[level].bombs, lastCells);
     if (!win)
@@ -43,8 +49,6 @@ export function havePlayerWinGame(playerId: string, lastCells: String[]) {
     if (match.curLevel === level)
         incrToNextLevel(match);
     incrPlayerToNextLevel(match, playerId);
-    if (player.eliminated)
-        return {eliminated: false};
     return {win: true, grid: match.games[match.curLevel].grid};
 }
 

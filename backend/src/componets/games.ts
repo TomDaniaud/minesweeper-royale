@@ -18,7 +18,7 @@ export function generateGame(id: number): Game {
     var solveGrid = data.solveGrid;
     var bombs = data.bombs;
     selectStartCell(grid, solveGrid);
-    return { id, grid, solveGrid, bombs, timer: 15, closingTime: 0 };
+    return { id, grid, solveGrid, bombs, timer: 1, closingTime: 0 };
 }
 
 function initializeGrid() {

@@ -27,21 +27,31 @@ export function addPlayerInMatch(match: Match, playerId: string) {
 }
 
 export function incrToNextLevel(match: Match) {
-    match.games[match.curLevel].closingTime = 0; //TODO: add cur time
+    match.games[match.curLevel].closingTime = Date.now();
     match.curLevel++;
     match.games.push(generateGame(match.curLevel));
 }
 
 export function incrPlayerToNextLevel(match: Match, playerId: string) {
-    var player = getPlayer(match.players, playerId);
-    var game = match.games[player.level];
-    if (0-game.closingTime > game.timer){ //Player eliminate sol the grid to late
-        setPlayerEliminated(match.players, playerId);
-        return;
-    }
     incrPlayerLevel(match.players, playerId);
 }
 
 export function isMatchReadyToStart(match: Match) {
     return match.nbPlayers === NB_PLAYER_PER_MATCH;
+}
+
+export function checkTimeouts(match: Match) { // TODO: optimize this
+    match.games.forEach(game => {
+        if (game.closingTime > 0) {
+            const elapsedTime = (Date.now() - game.closingTime) / 1000;
+            if (elapsedTime > game.timer) { 
+                Object.keys(match.players).forEach(playerId => {
+                    var player = getPlayer(match.players, playerId);
+                    if (!player.eliminated && player.level === game.id) {
+                        setPlayerEliminated(match.players, playerId);
+                    }
+                });
+            }
+        }
+    })
 }
