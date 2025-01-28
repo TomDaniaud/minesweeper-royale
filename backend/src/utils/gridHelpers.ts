@@ -1,4 +1,4 @@
-import {DIRS} from "../config/constants";
+import {DIRS} from "../config/constants.js";
 
 export const countNeighbors = (x: number, y: number, bombs: Set<String>) => {
   if (bombs.has(`${x},${y}`)) {

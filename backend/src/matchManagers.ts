@@ -1,6 +1,6 @@
-import { getPlayer, setPlayerEliminated } from "./components/players";
-import { isGameWin, revealCells } from "./components/games";
-import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./components/matchs";
+import { getPlayer, setPlayerEliminated } from "./components/players.js";
+import { isGameWin, revealCells } from "./components/games.js";
+import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./components/matchs.js";
 
 type Matchs = Match[];
 let matchs: Matchs = [];

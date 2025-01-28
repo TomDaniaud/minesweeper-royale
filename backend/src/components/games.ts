@@ -1,5 +1,5 @@
-import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "../config/constants";
-import {countNeighbors} from "../utils/gridHelpers";
+import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "../config/constants.js";
+import {countNeighbors} from "../utils/gridHelpers.js";
 
 export type Bombs = Set<string>;
 

@@ -1,9 +1,7 @@
-import { Socket } from "socket.io";
-import { canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers";
-
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
+import { Socket, Server } from "socket.io";
+import express from "express";
+import http from "http";
+import { canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers.js";
 
 const app = express();
 const server = http.createServer(app);

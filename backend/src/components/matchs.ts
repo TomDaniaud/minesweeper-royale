@@ -1,6 +1,6 @@
-import { NB_PLAYER_PER_MATCH } from "../config/constants";
-import { Game, generateGame } from "./games";
-import { Players, addPlayer, getPlayer, incrPlayerLevel, setPlayerEliminated } from "./players";
+import { NB_PLAYER_PER_MATCH } from "../config/constants.js";
+import { Game, generateGame } from "./games.js";
+import { Players, addPlayer, getPlayer, incrPlayerLevel, setPlayerEliminated } from "./players.js";
 
 type Games = Game[];
 
