@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { countFlags, countRemainingCells, getNeighbors, getRemainingCells,  } from "../utils/gridHelpers";
-import { NB_BOMBS } from "../config/constants";
+
+export let NB_BOMBS = -1;
 
 const useGameLogic = (initialGrid, socket) => {
   const [grid, setGrid] = useState(initialGrid);
@@ -26,6 +27,7 @@ const useGameLogic = (initialGrid, socket) => {
         window.location.href = "/";
       } else if (data.grid){
         setGrid([...data.grid.map(row => [...row])]);
+        NB_BOMBS = data.nb_bombs;
       }
     });
 

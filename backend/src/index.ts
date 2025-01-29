@@ -2,6 +2,7 @@ import { Socket, Server } from "socket.io";
 import express from "express";
 import http from "http";
 import { canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers.js";
+import { NB_PLAYER_PER_MATCH } from "./config/constants.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +19,7 @@ io.on("connection", (socket: Socket) => {
     if (match === undefined) // player already in a queue
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
-    socket.emit("updateQueue", match.nbPlayers);
+    socket.emit("updateQueue", {count: match.nbPlayers, nb_player_per_match: NB_PLAYER_PER_MATCH});
     if (canLaunchMatch(match.id)){
       console.log(`Start match ${match.id}`);
       const initialGameState = startMatch(match.id);

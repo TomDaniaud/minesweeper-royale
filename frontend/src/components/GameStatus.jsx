@@ -1,5 +1,5 @@
 import React from "react";
-import { NB_BOMBS } from "../config/constants";
+import { NB_BOMBS } from "../hooks/useGameLogic";
 
 const GameStatus = ({ placeFlags, remainingCells }) => {
   return (

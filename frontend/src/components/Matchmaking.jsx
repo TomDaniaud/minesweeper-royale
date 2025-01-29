@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket";
-import { NB_PLAYER_PER_MATCH } from "../config/constants";
+
+let NB_PLAYER_PER_MATCH = -1;
 
 const Matchmaking = () => {
   const navigate = useNavigate();
@@ -9,7 +10,10 @@ const Matchmaking = () => {
   const [playersWaiting, setPlayersWaiting] = useState(0);
 
   useEffect(() => {
-    socket.on("updateQueue", (count) => setPlayersWaiting(count));
+    socket.on("updateQueue", ({count, nb_player_per_match}) => {
+      setPlayersWaiting(count);
+      NB_PLAYER_PER_MATCH = nb_player_per_match;
+  });
 
     socket.on("matchFound", ({ roomId }) => {
       navigate(`/game/${roomId}`);
