@@ -27,12 +27,12 @@ function getMatch(id: number | null): Match | null {
     return matchs[id];
 }
 
-export function findMatch(playerId: string) {
+export function findMatch(playerId: string, playerName: string) {
     if (matchs.length === 0 || matchs[matchs.length-1].launch === true)
         matchs.push(createNewMatch(matchs.length));
     if (playerAssigment[playerId] !== undefined && getMatch(playerAssigment[playerId])?.launch === false)
         return;
-    addPlayerInMatch(matchs[matchs.length-1], playerId);
+    addPlayerInMatch(matchs[matchs.length-1], playerId, playerName);
     playerAssigment[playerId] = matchs.length-1;
     return matchs[matchs.length-1];
 }

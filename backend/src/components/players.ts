@@ -1,4 +1,5 @@
 export interface Player {
+  name: string;
   match: number;
   level: number;
   progress: number;
@@ -7,8 +8,8 @@ export interface Player {
 
 export type Players = Record<string, Player>;
 
-export function addPlayer(players: Players, id: string, matchId: number) {
-  players[id] = {match: matchId, level: 0, progress: 0, eliminated: false };
+export function addPlayer(players: Players, id: string, name: string, matchId: number) {
+  players[id] = {name: name, match: matchId, level: 0, progress: 0, eliminated: false };
 }
 
 export function removePlayer(players: Players, id: string) {

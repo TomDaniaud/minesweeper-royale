@@ -13,13 +13,14 @@ const io = new Server(server, {
 io.on("connection", (socket: Socket) => {
   console.log(`Player connected: ${socket.id}`);
 
-  socket.on("joinQueue", () => {
+  socket.on("joinQueue", (playerName) => {
     var playerId = socket.id;
-    var match = findMatch(playerId);
+    var match = findMatch(playerId, playerName);
     if (match === undefined) // player already in a queue
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
     socket.emit("updateQueue", {count: match.nbPlayers, nb_player_per_match: NB_PLAYER_PER_MATCH});
+    console.log(match.players);
     if (canLaunchMatch(match.id)){
       console.log(`Start match ${match.id}`);
       const initialGameState = startMatch(match.id);

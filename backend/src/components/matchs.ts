@@ -21,8 +21,8 @@ export function createNewMatch(id: number) {
     return {id, games, players, nbPlayers: 0, curLevel, launch: false};
 }
 
-export function addPlayerInMatch(match: Match, playerId: string) {
-    addPlayer(match.players, playerId, match.id);
+export function addPlayerInMatch(match: Match, playerId: string, playerName: string) {
+    addPlayer(match.players, playerId, playerName, match.id);
     match.nbPlayers++;
 }
 
