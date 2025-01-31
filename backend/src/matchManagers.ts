@@ -1,7 +1,7 @@
-import { getPlayer, setPlayerEliminated } from "./components/players.js";
-import { isGameWin, revealCells } from "./components/games.js";
-import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts, removePlayerInMatch } from "./components/matchs.js";
-import { NB_BOMBS } from "./config/constants.js";
+import { getPlayer, setPlayerEliminated } from "./components/players";
+import { isGameWin, revealCells } from "./components/games";
+import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts, removePlayerInMatch } from "./components/matchs";
+import { NB_BOMBS } from "./config/constants";
 
 type Matchs = Match[];
 let matchs: Matchs = [];

@@ -1,8 +1,8 @@
-/** @type {import('jest').Config} **/
-export default {
+/** @type {import('jest').Config} */
+module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  roots: ["<rootDir>/tests"], // Emplacement des tests
+  roots: ["<rootDir>/tests"],
   moduleFileExtensions: ["ts", "js"],
   testMatch: ["**/*.test.ts"],
   collectCoverage: true,

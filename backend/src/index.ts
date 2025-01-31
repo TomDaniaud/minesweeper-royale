@@ -1,8 +1,8 @@
 import { Socket, Server } from "socket.io";
 import express from "express";
 import http from "http";
-import { cancelMatch, canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers.js";
-import { NB_PLAYER_PER_MATCH } from "./config/constants.js";
+import { cancelMatch, canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers";
+import { NB_PLAYER_PER_MATCH } from "./config/constants";
 
 const app = express();
 const server = http.createServer(app);

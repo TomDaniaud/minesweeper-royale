@@ -1,5 +1,5 @@
-import {GRID_SIZE, NB_BOMBS, Grid, DIRS, TIMER_EVOLUTION} from "../config/constants.js";
-import {countNeighbors} from "../utils/gridHelpers.js";
+import {GRID_SIZE, NB_BOMBS, Grid, DIRS, TIMER_EVOLUTION} from "../config/constants";
+import {countNeighbors} from "../utils/gridHelpers";
 
 export type Bombs = Set<string>;
 
@@ -62,7 +62,7 @@ function selectStartCell(grid:Grid, solveGrid: Grid) {
     });
 }
 
-export function getCells(solveGrid:Grid, x: number, y: number) {
+function getCells(solveGrid:Grid, x: number, y: number) {
     if (solveGrid[x][y] !== 0) {
       return [{x, y, value: solveGrid[x][y]}];
     }
