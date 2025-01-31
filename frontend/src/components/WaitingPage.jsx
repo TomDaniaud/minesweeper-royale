@@ -4,7 +4,7 @@ import useSocket from "../hooks/useSocket";
 
 let NB_PLAYER_PER_MATCH = -1;
 
-const Matchmaking = () => {
+const WaitingPage = () => {
   const navigate = useNavigate();
   const socket = useSocket();
   const [playersWaiting, setPlayersWaiting] = useState(0);
@@ -26,12 +26,18 @@ const Matchmaking = () => {
     };
   }, [socket, navigate]);
 
+  const cancel = () => {
+    navigate('/');
+    socket.emit("cancelQueue");
+  }
+
   return (
     <div>
       <h1>Waiting for other players...</h1>
       <p>Waiting players : {playersWaiting} / {NB_PLAYER_PER_MATCH}</p>
+      <button onClick={() => cancel()}>Cancel</button>
     </div>
   );
 };
 
-export default Matchmaking;
+export default WaitingPage;

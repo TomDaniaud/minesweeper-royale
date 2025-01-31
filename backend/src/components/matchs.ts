@@ -1,6 +1,6 @@
 import { NB_PLAYER_PER_MATCH } from "../config/constants.js";
 import { Game, generateGame } from "./games.js";
-import { Players, addPlayer, getPlayer, incrPlayerLevel, setPlayerEliminated } from "./players.js";
+import { Players, addPlayer, getPlayer, incrPlayerLevel, removePlayer, setPlayerEliminated } from "./players.js";
 
 type Games = Game[];
 
@@ -24,6 +24,11 @@ export function createNewMatch(id: number) {
 export function addPlayerInMatch(match: Match, playerId: string, playerName: string) {
     addPlayer(match.players, playerId, playerName, match.id);
     match.nbPlayers++;
+}
+
+export function removePlayerInMatch(match: Match, playerId: string) {
+    removePlayer(match.players, playerId);
+    match.nbPlayers--;
 }
 
 export function incrToNextLevel(match: Match) {

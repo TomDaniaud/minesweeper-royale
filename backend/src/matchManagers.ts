@@ -1,6 +1,6 @@
 import { getPlayer, setPlayerEliminated } from "./components/players.js";
 import { isGameWin, revealCells } from "./components/games.js";
-import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts } from "./components/matchs.js";
+import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts, removePlayerInMatch } from "./components/matchs.js";
 import { NB_BOMBS } from "./config/constants.js";
 
 type Matchs = Match[];
@@ -35,6 +35,16 @@ export function findMatch(playerId: string, playerName: string) {
     addPlayerInMatch(matchs[matchs.length-1], playerId, playerName);
     playerAssigment[playerId] = matchs.length-1;
     return matchs[matchs.length-1];
+}
+
+export function cancelMatch(playerId: string) {
+    const matchId = getPlayerAssignment(playerId);
+    if (matchId === null) return { error: "NO_MATCH" };
+    const match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
+    removePlayerInMatch(match, playerId);
+    delete playerAssigment[playerId];
+    return {match};
 }
 
 export function startMatch(matchId: number) {
