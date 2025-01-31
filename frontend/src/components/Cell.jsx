@@ -3,7 +3,7 @@ import { Graphics, Text } from "@pixi/react";
 import { CELL_SIZE } from "../config/constants";
 import "@pixi/events";
 
-const Cell = ({ x, y, cellValue, onClick }) => {
+const Cell = ({ x, y, cellValue, onClick, onContextMenu}) => {
   return (
     <React.Fragment key={`${x}-${y}`}>
       <Graphics
@@ -15,7 +15,8 @@ const Cell = ({ x, y, cellValue, onClick }) => {
           g.endFill();
         }}
         interactive
-        pointerdown={() => onClick()}
+        pointerdown={onClick}
+        rightclick={onContextMenu}
       />
       {!(cellValue === -1 || cellValue === 0 || cellValue === 9) && (
           <Text

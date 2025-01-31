@@ -8,7 +8,7 @@ import { GRID_SIZE, CELL_SIZE } from "../config/constants";
 
 const GameBoard = () => {
   const socket = useSocket();
-  const {grid, dig, toggleDig, handleClick, placeFlags, remainingCells } = useGameLogic(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)), socket);
+  const {grid, dig, toggleDig, handleClick, handleRightClick, placeFlags, remainingCells } = useGameLogic(Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(-1)), socket);
 
   useEffect(() => {
     socket.emit("requestGameState");
@@ -18,10 +18,21 @@ const GameBoard = () => {
     <div className="game-board">
       <GameStatus placeFlags={placeFlags} remainingCells={remainingCells} />
       <button onClick={toggleDig}>{dig ? "🔨 Dig" : "🚩 Flag"}</button>
-      <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE}>
+      <Stage
+        width={GRID_SIZE * CELL_SIZE}
+        height={GRID_SIZE * CELL_SIZE}
+        onContextMenu={(e) => e.preventDefault()}
+      >
         {grid.map((row, x) =>
           row.map((cell, y) => (
-            <Cell key={`${x}-${y}`} x={x} y={y} cellValue={cell} onClick={() => handleClick(x, y)} />
+            <Cell 
+              key={`${x}-${y}`}
+              x={x}
+              y={y}
+              cellValue={cell}
+              onClick={(event) => handleClick(event, x, y)}
+              onContextMenu={(event) => handleRightClick(event, x, y)}
+            />
           ))
         )}
       </Stage>

@@ -12,7 +12,6 @@ const WaitingPage = () => {
   useEffect(() => {
     socket.on("updateQueue", ({count, nb_player_per_match}) => {
       setPlayersWaiting(count);
-      console.log("receive");
       NB_PLAYER_PER_MATCH = nb_player_per_match;
   });
 
