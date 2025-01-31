@@ -4,7 +4,7 @@ import HomePage from "./components/HomePage";
 import GameBoard from "./components/GameBoard";
 import Matchmaking from "./components/Matchmaking";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>

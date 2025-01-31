@@ -1,9 +1,12 @@
+// @ts-nocheck // pixi ne prend pas en charge les types
 import React from "react";
 import { Graphics, Text } from "@pixi/react";
 import { CELL_SIZE } from "../config/constants";
+// import { Cell:CellType } from "../config/types";
 import "@pixi/events";
 
-const Cell = ({ x, y, cellValue, onClick }) => {
+const Cell = ({ cell, onClick }) => { //: { cell: Cell, onClick: () => void }
+  const { x, y, value: cellValue } = cell;
   return (
     <React.Fragment key={`${x}-${y}`}>
       <Graphics
@@ -18,18 +21,18 @@ const Cell = ({ x, y, cellValue, onClick }) => {
         pointerdown={() => onClick()}
       />
       {!(cellValue === -1 || cellValue === 0 || cellValue === 9) && (
-          <Text
-            text={cellValue.toString()}
-            x={x * CELL_SIZE + CELL_SIZE / 2}
-            y={y * CELL_SIZE + CELL_SIZE / 2}
-            anchor={0.5}
-            style={{
-              fontSize: 16,
-              fill: 0x000000,
-              fontWeight: "bold",
-            }}
-          />
-        )}
+        <Text
+          text={cellValue.toString()}
+          x={x * CELL_SIZE + CELL_SIZE / 2}
+          y={y * CELL_SIZE + CELL_SIZE / 2}
+          anchor={0.5}
+          style={{
+            fontSize: 16,
+            fill: 0x000000,
+            fontWeight: "bold",
+          }}
+        />
+      )}
     </React.Fragment>
   );
 };
