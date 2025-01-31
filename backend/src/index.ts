@@ -2,7 +2,7 @@ import { Socket, Server } from "socket.io";
 import express from "express";
 import http from "http";
 import { cancelMatch, canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers";
-import { NB_PLAYER_PER_MATCH } from "./config/constants";
+import { config } from "./config/constants";
 
 const app = express();
 const server = http.createServer(app);
@@ -19,7 +19,7 @@ io.on("connection", (socket: Socket) => {
     if (match === undefined) // player already in a queue
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
-    socket.emit("updateQueue", {count: match.nbPlayers, nb_player_per_match: NB_PLAYER_PER_MATCH});
+    socket.emit("updateQueue", {count: match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH});
     if (canLaunchMatch(match.id)){
       console.log(`Start match ${match.id}`);
       const initialGameState = startMatch(match.id);
@@ -31,7 +31,7 @@ io.on("connection", (socket: Socket) => {
     var playerId = socket.id;
     var rep = cancelMatch(playerId);
     if (rep.error || !rep.match) return;
-    io.emit("updateQueue", {count: rep.match.nbPlayers, nb_player_per_match: NB_PLAYER_PER_MATCH}); // TODO: don't send to every player connect
+    io.emit("updateQueue", {count: rep.match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH}); // TODO: don't send to every player connect
   });
 
   socket.on("requestGameState", () => {

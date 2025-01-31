@@ -1,4 +1,4 @@
-import { NB_PLAYER_PER_MATCH } from "../config/constants";
+import { config } from "../config/constants";
 import { Game, generateGame } from "./games";
 import { Players, addPlayer, getPlayer, incrPlayerLevel, removePlayer, setPlayerEliminated } from "./players";
 
@@ -42,7 +42,7 @@ export function incrPlayerToNextLevel(match: Match, playerId: string) {
 }
 
 export function isMatchReadyToStart(match: Match) {
-    return match.nbPlayers === NB_PLAYER_PER_MATCH;
+    return match.nbPlayers === config.NB_PLAYER_PER_MATCH;
 }
 
 export function checkTimeouts(match: Match) { // TODO: optimize this

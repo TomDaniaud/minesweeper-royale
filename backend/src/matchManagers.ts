@@ -1,7 +1,7 @@
 import { getPlayer, setPlayerEliminated } from "./components/players";
 import { isGameWin, revealCells } from "./components/games";
 import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToNextLevel, isMatchReadyToStart, checkTimeouts, removePlayerInMatch } from "./components/matchs";
-import { NB_BOMBS } from "./config/constants";
+import { config } from "./config/constants";
 
 type Matchs = Match[];
 let matchs: Matchs = [];
@@ -97,5 +97,5 @@ export function getFirstGame(playerId: string) {
     if (matchId === null) return { error: "NO_MATCH" };
     const match = getMatch(matchId);
     if (match === null) return { error: "NO_MATCH" };
-    return {grid: match.games[0].grid, nb_bombs: NB_BOMBS};
+    return {grid: match.games[0].grid, nb_bombs: config.NB_BOMBS};
 }
