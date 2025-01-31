@@ -1,4 +1,4 @@
-import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "../config/constants.js";
+import {GRID_SIZE, NB_BOMBS, Grid, DIRS, TIMER_EVOLUTION} from "../config/constants.js";
 import {countNeighbors} from "../utils/gridHelpers.js";
 
 export type Bombs = Set<string>;
@@ -17,8 +17,14 @@ export function generateGame(id: number): Game {
     var grid = data.grid;
     var solveGrid = data.solveGrid;
     var bombs = data.bombs;
+    var timer = getTimer(id);
     selectStartCell(grid, solveGrid);
-    return { id, grid, solveGrid, bombs, timer: 1, closingTime: 0 };
+    return { id, grid, solveGrid, bombs, timer: timer, closingTime: 0 };
+}
+
+function getTimer(id: number) {
+  if (id >= TIMER_EVOLUTION.length) return 1;
+  return TIMER_EVOLUTION[id];
 }
 
 function initializeGrid() {
