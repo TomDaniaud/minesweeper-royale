@@ -13,7 +13,7 @@ describe("Games module", () => {
                             [1, 1, 1, 0]
                         ]
 
-    let bombs: Bombs = new Set(['0,0', '1,2'])
+    let bombs: Bombs = new Set(['0,0', '2,1'])
 
     test("Generate a game", () => {
         var game: Game = generateGame(0);
@@ -37,10 +37,10 @@ describe("Games module", () => {
     });
 
     test("Check if a game is win", () => {
-        expect(isGameWin(bombs, ['0,0', '1,1', '1,2'])).toEqual(false);
+        expect(isGameWin(bombs, ['0,0', '1,1', '2,1'])).toEqual(false);
         expect(isGameWin(bombs, ['0,0', '1,1'])).toEqual(false);
         expect(isGameWin(bombs, [])).toEqual(false);
-        expect(isGameWin(bombs, ['0,0', '1,2'])).toEqual(true);
+        expect(isGameWin(bombs, ['0,0', '2,1'])).toEqual(true);
     });
 
     test("Reveal list of cells after clicking at (x, y)", () => {
