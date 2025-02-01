@@ -3,7 +3,7 @@ import { TIMER_EVOLUTION, Grid, config } from "../src/config/constants";
 
 describe("Games module", () => {
     let grid: Grid = [[-1,  1, 0, 0],
-                      [-1, -1, 1, 0],
+                      [-1,  1, 1, 0],
                       [-1, -1, 1, 0],
                       [-1, -1, 1, 0]
                     ]
@@ -64,5 +64,4 @@ describe("Games module", () => {
 
         config.GRID_SIZE = originalValue;
     });
-    
 });
