@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { countFlags, countRemainingCells, getNeighbors, getRemainingCells, } from "../utils/gridHelpers";
 import { Socket } from "socket.io-client";
-import { initialGameState, ResultEndGame, ResultOnReveal, XY } from "../config/types";
+import { Grid, initialGameState, ResultEndGame, ResultOnReveal, XY } from "../config/types";
 
 export let NB_BOMBS = -1;
 
-const useGameLogic = (initialGrid: Array<Array<number>>, socket: Socket) => {
+const useGameLogic = (initialGrid: Grid, socket: Socket) => {
   const [grid, setGrid] = useState(initialGrid);
   const [dig, setDig] = useState(true);
   const [placedFlags, setFlags] = useState(countFlags(initialGrid));

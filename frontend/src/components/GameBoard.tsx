@@ -20,8 +20,8 @@ const GameBoard = () => {
       <GameStatus placeFlags={placedFlags} remainingCells={remainingCells} />
       <Stage width={GRID_SIZE * CELL_SIZE} height={GRID_SIZE * CELL_SIZE}>
         {grid.map((row, x) =>
-          row.map((cell, y) => (
-            <Cell key={`${x}-${y}`} x={x} y={y} cellValue={cell} onClick={() => handleClick(x, y)} />
+          row.map((cellValue, y) => (
+            <Cell key={`${x}-${y}`} cell={{ x, y, cellValue }} onClick={() => handleClick({ x, y })} />
           ))
         )}
       </Stage>

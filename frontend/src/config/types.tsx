@@ -1,9 +1,3 @@
-export type initialGameState = {
-    grid?: Grid;
-    nb_bombs?: number;
-    error?: string;
-};
-
 export type Bombs = Set<string>;
 
 export type XY = {
@@ -11,7 +5,7 @@ export type XY = {
     y: number;
 };
 
-export type Grid = Cell[][];
+export type Grid = number[][];
 
 export type Game = {
     id: number;
@@ -27,6 +21,12 @@ export type Cell = {
     y: number;
     value: number;
 }
+
+export type initialGameState = {
+    grid?: Grid;
+    nb_bombs?: number;
+    error?: string;
+};
 
 type Result = {
     error?: string;

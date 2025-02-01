@@ -5,10 +5,10 @@ import { CELL_SIZE } from "../config/constants";
 // import { Cell:CellType } from "../config/types";
 import "@pixi/events";
 
-const Cell = ({ cell, onClick }) => { //: { cell: Cell, onClick: () => void }
-  const { x, y, value: cellValue } = cell;
+const Cell = ({ cell, onClick }) => {
+  const { x, y, cellValue } = cell;
   return (
-    <React.Fragment key={`${x}-${y}`}>
+    <React.Fragment key={`${x}- ${y}`}>
       <Graphics
         draw={(g) => {
           g.clear();
@@ -20,20 +20,22 @@ const Cell = ({ cell, onClick }) => { //: { cell: Cell, onClick: () => void }
         interactive
         pointerdown={() => onClick()}
       />
-      {!(cellValue === -1 || cellValue === 0 || cellValue === 9) && (
-        <Text
-          text={cellValue.toString()}
-          x={x * CELL_SIZE + CELL_SIZE / 2}
-          y={y * CELL_SIZE + CELL_SIZE / 2}
-          anchor={0.5}
-          style={{
-            fontSize: 16,
-            fill: 0x000000,
-            fontWeight: "bold",
-          }}
-        />
-      )}
-    </React.Fragment>
+      {
+        !(cellValue === -1 || cellValue === 0 || cellValue === 9) && (
+          <Text
+            text={cellValue.toString()}
+            x={x * CELL_SIZE + CELL_SIZE / 2}
+            y={y * CELL_SIZE + CELL_SIZE / 2}
+            anchor={0.5}
+            style={{
+              fontSize: 16,
+              fill: 0x000000,
+              fontWeight: "bold",
+            }}
+          />
+        )
+      }
+    </React.Fragment >
   );
 };
 
