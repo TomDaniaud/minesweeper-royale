@@ -25,10 +25,14 @@ export function getPlayer(players: Players, id: string) {
 }
 
 export function setPlayerEliminated(players: Players, id: string) {
+  if (players[id] === undefined)
+    return;
   players[id].eliminated = true;
 }
 
 export function incrPlayerLevel(players: Players, id: string) {
+  if (players[id] === undefined)
+    return;
   players[id].level++;
   players[id].progress = 0;
 }
