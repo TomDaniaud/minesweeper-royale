@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useSocket from "../hooks/useSocket";
 
-let NB_PLAYER_PER_MATCH = -1;
 
-const Matchmaking = () => {
+const WaitingPage = () => {
   const navigate = useNavigate();
   const socket = useSocket();
   const [playersWaiting, setPlayersWaiting] = useState(0);
+  const [nbPlayerPerMatch, setNbPlayerPerMatch] = useState(0);
 
   useEffect(() => {
-    socket.on("updateQueue", ({count, nb_player_per_match}) => {
+    socket.on("updateQueue", ({ count, nb_player_per_match }: { count: number, nb_player_per_match: number }) => {
       setPlayersWaiting(count);
-      console.log("receive");
-      NB_PLAYER_PER_MATCH = nb_player_per_match;
-  });
+      setNbPlayerPerMatch(nb_player_per_match || -1);
+    });
 
     socket.on("matchFound", ({ roomId }) => {
       navigate(`/game/${roomId}`);
@@ -26,12 +25,18 @@ const Matchmaking = () => {
     };
   }, [socket, navigate]);
 
+  const cancel = () => {
+    navigate('/');
+    socket.emit("cancelQueue");
+  }
+
   return (
     <div>
       <h1>Waiting for other players...</h1>
-      <p>Waiting players : {playersWaiting} / {NB_PLAYER_PER_MATCH}</p>
+      <p>Waiting players : {playersWaiting} / {nbPlayerPerMatch}</p>
+      <button onClick={() => cancel()}>Cancel</button>
     </div>
   );
 };
 
-export default Matchmaking;
+export default WaitingPage;

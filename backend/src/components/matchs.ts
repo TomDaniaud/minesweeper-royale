@@ -1,6 +1,6 @@
-import { NB_PLAYER_PER_MATCH } from "../config/constants.js";
-import { Game, generateGame } from "./games.js";
-import { Players, addPlayer, getPlayer, incrPlayerLevel, setPlayerEliminated } from "./players.js";
+import { config } from "../config/constants";
+import { Game, generateGame } from "./games";
+import { Players, addPlayer, getPlayer, incrPlayerLevel, removePlayer, setPlayerEliminated } from "./players";
 
 type Games = Game[];
 
@@ -22,8 +22,17 @@ export function createNewMatch(id: number) {
 }
 
 export function addPlayerInMatch(match: Match, playerId: string, playerName: string) {
+    if (match.players[playerId] !== undefined)
+        return;
     addPlayer(match.players, playerId, playerName, match.id);
     match.nbPlayers++;
+}
+
+export function removePlayerInMatch(match: Match, playerId: string) {
+    if (match.players[playerId] === undefined)
+        return;
+    removePlayer(match.players, playerId);
+    match.nbPlayers--;
 }
 
 export function incrToNextLevel(match: Match) {
@@ -33,13 +42,18 @@ export function incrToNextLevel(match: Match) {
 }
 
 export function incrPlayerToNextLevel(match: Match, playerId: string) {
+    if (match.players[playerId] === undefined)
+        return;
     incrPlayerLevel(match.players, playerId);
 }
 
 export function isMatchReadyToStart(match: Match) {
-    return match.nbPlayers === NB_PLAYER_PER_MATCH;
+    return match.nbPlayers === config.NB_PLAYER_PER_MATCH;
 }
 
+/**
+ * Check if games for a match is timeout to eliminate player at this level.
+ */
 export function checkTimeouts(match: Match) { // TODO: optimize this
     match.games.forEach(game => {
         if (game.closingTime > 0) {

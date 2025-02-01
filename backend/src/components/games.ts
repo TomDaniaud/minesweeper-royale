@@ -1,5 +1,5 @@
-import {GRID_SIZE, NB_BOMBS, Grid ,DIRS} from "../config/constants.js";
-import {countNeighbors} from "../utils/gridHelpers.js";
+import {config, Grid, DIRS, TIMER_EVOLUTION} from "../config/constants";
+import {countNeighbors} from "../utils/gridHelpers";
 
 export type Bombs = Set<string>;
 
@@ -17,26 +17,32 @@ export function generateGame(id: number): Game {
     var grid = data.grid;
     var solveGrid = data.solveGrid;
     var bombs = data.bombs;
+    var timer = getTimer(id);
     selectStartCell(grid, solveGrid);
-    return { id, grid, solveGrid, bombs, timer: 1, closingTime: 0 };
+    return { id, grid, solveGrid, bombs, timer: timer, closingTime: 0 };
+}
+
+function getTimer(id: number) {
+  if (id >= TIMER_EVOLUTION.length) return 1;
+  return TIMER_EVOLUTION[id];
 }
 
 function initializeGrid() {
-  const grid: Grid = Array(GRID_SIZE)
+  const grid: Grid = Array(config.GRID_SIZE)
     .fill(null)
-    .map(() => Array(GRID_SIZE).fill(-1));
+    .map(() => Array(config.GRID_SIZE).fill(-1));
   const bombs: Set<string> = new Set();
-  for (let i = 0; i < NB_BOMBS; i++) {
+  for (let i = 0; i < config.NB_BOMBS; i++) {
     let pos: string;
     do {
-      pos = `${Math.floor(Math.random() * GRID_SIZE)},${Math.floor(Math.random() * GRID_SIZE)}`;
+      pos = `${Math.floor(Math.random() * config.GRID_SIZE)},${Math.floor(Math.random() * config.GRID_SIZE)}`;
     } while (bombs.has(pos));
     bombs.add(pos);
   }
-  const solveGrid: Grid = Array(GRID_SIZE)
+  const solveGrid: Grid = Array(config.GRID_SIZE)
     .fill(null)
     .map((_, i) =>
-      Array(GRID_SIZE)
+      Array(config.GRID_SIZE)
         .fill(0)
         .map((_, j) => countNeighbors(i, j, bombs))
     );
@@ -45,8 +51,8 @@ function initializeGrid() {
 
 function selectStartCell(grid:Grid, solveGrid: Grid) {
     var choice = [];
-    for (let i = 0; i < GRID_SIZE; i++) {
-      for (let j = 0; j < GRID_SIZE; j++) {
+    for (let i = 0; i < config.GRID_SIZE; i++) {
+      for (let j = 0; j < config.GRID_SIZE; j++) {
         if (solveGrid[i][j] === 0) choice.push([i,j]);
       }
     }
@@ -56,7 +62,7 @@ function selectStartCell(grid:Grid, solveGrid: Grid) {
     });
 }
 
-export function getCells(solveGrid:Grid, x: number, y: number) {
+function getCells(solveGrid:Grid, x: number, y: number) {
     if (solveGrid[x][y] !== 0) {
       return [{x, y, value: solveGrid[x][y]}];
     }
@@ -76,7 +82,7 @@ export function getCells(solveGrid:Grid, x: number, y: number) {
       DIRS.forEach(d => {
         dx = nx + d[0];
         dy = ny + d[1];
-        if (-1 < dx && dx < GRID_SIZE && -1 < dy && dy < GRID_SIZE && !visited.has(`${dx},${dy}`)){
+        if (-1 < dx && dx < config.GRID_SIZE && -1 < dy && dy < config.GRID_SIZE && !visited.has(`${dx},${dy}`)){
           stack.push([dx, dy]);
         }
       });
@@ -84,16 +90,18 @@ export function getCells(solveGrid:Grid, x: number, y: number) {
     return res;
 }
 
-export function isGameWin(bombs: Bombs, cells: String[]){
+export function isGameWin(bombs: Bombs, cells: String[]) {
   var cellsSet = new Set<String>(cells);
   if (bombs.size !== cellsSet.size) return false;
-    bombs.forEach(cell => {
-        if (!cellsSet.has(cell)) return false;
-    });
+  for (let cell of bombs) {
+    if (!cellsSet.has(cell)) return false;
+  }
   return true;
 }
 
 export function revealCells(bombs: Bombs, solvedGrid: Grid, x: number, y: number) {
+  if (x >= config.GRID_SIZE || y >= config.GRID_SIZE || x < 0 || y < 0 )
+    return [];
   if (bombs.has(`${x},${y}`))
     return [];
   return getCells(solvedGrid,x,y);

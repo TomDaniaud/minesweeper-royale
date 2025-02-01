@@ -70,10 +70,10 @@ const useGameLogic = (initialGrid: Grid, socket: Socket) => {
 
   const toggleDig = () => setDig((prev) => !prev);
 
-  const handleClick = ({ x, y }: XY): void => {
-    if (dig && grid[x][y] === -1) {  // unknown cell
+  const clickAction = (mouseActionSwitch: "left" | "right", { x, y }: XY): void => {
+    if (((dig && mouseActionSwitch === 'left') || (!dig && mouseActionSwitch == 'right')) && grid[x][y] === -1) {  // unknown cell
       socket.emit("revealCell", { x, y });
-    } else if (!dig && (grid[x][y] === -1 || grid[x][y] === 9)) { // place or remove flag
+    } else if (((!dig && mouseActionSwitch === 'left') || (dig && mouseActionSwitch == 'right')) && (grid[x][y] === -1 || grid[x][y] === 9)) { // place or remove flag
       const updatedGrid = [...grid];
       updatedGrid[x][y] = updatedGrid[x][y] === -1 ? 9 : -1;
       setGrid(updatedGrid);
@@ -82,13 +82,31 @@ const useGameLogic = (initialGrid: Grid, socket: Socket) => {
       if (grid[x][y] <= data.flags) // dig around known cell
         data.neighbors.forEach(cell => socket.emit("revealCell", { x: cell[0], y: cell[1] }));
     }
+  }
+  type ClickEvent = {
+    data?: {
+      originalEvent?: MouseEvent;
+    };
+    button?: number;
+  }
+
+  const handleClick = (event: ClickEvent, { x, y }: XY) => {
+    const nativeEvent = event.data?.originalEvent || event;
+    if (!nativeEvent || nativeEvent.button !== 0) return;
+    clickAction('left', { x, y });
+  };
+
+  const handleRightClick = (event: ClickEvent, { x, y }: XY) => {
+    const nativeEvent = event.data?.originalEvent || event;
+    if (!nativeEvent) return;
+    clickAction('right', { x, y });
   };
 
   const isGridFinish = () => {
     socket.emit("isGridValid", { cells: getRemainingCells(grid) });
   }
 
-  return { grid, dig, toggleDig, handleClick, placedFlags, remainingCells };
+  return { grid, dig, toggleDig, handleClick, handleRightClick, placedFlags, remainingCells };
 };
 
 export default useGameLogic;

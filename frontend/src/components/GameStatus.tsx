@@ -1,4 +1,3 @@
-import React from "react";
 import { NB_BOMBS } from "../hooks/useGameLogic";
 
 const GameStatus = ({ placeFlags: placedFlags, remainingCells }: { placeFlags: number, remainingCells: number }) => {
