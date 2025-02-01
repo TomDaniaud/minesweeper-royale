@@ -1,7 +1,7 @@
 import { Socket, Server } from "socket.io";
 import express from "express";
 import http from "http";
-import { cancelMatch, canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers";
+import { leaveMatch, canLaunchMatch, findMatch, getFirstGame, havePlayerWinGame, playPlayerAction, startMatch } from "./matchManagers";
 import { config } from "./config/constants";
 
 const app = express();
@@ -29,7 +29,7 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("cancelQueue", () => {
     var playerId = socket.id;
-    var rep = cancelMatch(playerId);
+    var rep = leaveMatch(playerId);
     if (rep.error || !rep.match) return;
     io.emit("updateQueue", {count: rep.match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH}); // TODO: don't send to every player connect
   });
@@ -56,7 +56,7 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("disconnect", () => {
     var playerId = socket.id;
-    cancelMatch(playerId);
+    leaveMatch(playerId);
     console.log(`Player disconnected: ${socket.id}`);
   });
 });

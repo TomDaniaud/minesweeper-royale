@@ -4,12 +4,10 @@ import { Match, addPlayerInMatch, createNewMatch, incrToNextLevel, incrPlayerToN
 import { config } from "./config/constants";
 
 type Matchs = Match[];
-let matchs: Matchs = [];
-let playerAssigment: Record<string, number> = {};
+export let matchs: Matchs = [];
+export let playerAssigment: Record<string, number> = {};
 
-setInterval(() => {
-    matchs.forEach(match => checkTimeouts(match));
-}, 1000);
+setInterval(() => matchs.forEach(match => checkTimeouts(match)), 1000);
 
 function getPlayerAssignment(playerId: string): number | null {
     if (playerAssigment[playerId] === undefined) {
@@ -27,6 +25,9 @@ function getMatch(id: number | null): Match | null {
     return matchs[id];
 }
 
+/**
+ * Find a match to join for a player
+ */
 export function findMatch(playerId: string, playerName: string) {
     if (matchs.length === 0 || matchs[matchs.length-1].launch === true)
         matchs.push(createNewMatch(matchs.length));
@@ -37,7 +38,10 @@ export function findMatch(playerId: string, playerName: string) {
     return matchs[matchs.length-1];
 }
 
-export function cancelMatch(playerId: string) {
+/**
+ * Removes player from his current match
+ */
+export function leaveMatch(playerId: string) {
     const matchId = getPlayerAssignment(playerId);
     if (matchId === null) return { error: "NO_MATCH" };
     const match = getMatch(matchId);
@@ -48,13 +52,15 @@ export function cancelMatch(playerId: string) {
 }
 
 export function startMatch(matchId: number) {
-    var match = getMatch(matchId)!;
+    var match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
     match.launch = true;
     return {roomId: matchId}
 }
 
 export function canLaunchMatch(matchId: number) {
-    var match = getMatch(matchId)!;
+    var match = getMatch(matchId);
+    if (match === null) return { error: "NO_MATCH" };
     return isMatchReadyToStart(match) && match.launch === false;
 }
 
@@ -98,4 +104,12 @@ export function getFirstGame(playerId: string) {
     const match = getMatch(matchId);
     if (match === null) return { error: "NO_MATCH" };
     return {grid: match.games[0].grid, nb_bombs: config.NB_BOMBS};
+}
+
+/**
+ * Clear the variable for the tests
+ */
+export function clearMatchs() {
+    matchs = [];
+    playerAssigment = {};
 }
