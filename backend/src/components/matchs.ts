@@ -22,11 +22,15 @@ export function createNewMatch(id: number) {
 }
 
 export function addPlayerInMatch(match: Match, playerId: string, playerName: string) {
+    if (match.players[playerId] !== undefined)
+        return;
     addPlayer(match.players, playerId, playerName, match.id);
     match.nbPlayers++;
 }
 
 export function removePlayerInMatch(match: Match, playerId: string) {
+    if (match.players[playerId] === undefined)
+        return;
     removePlayer(match.players, playerId);
     match.nbPlayers--;
 }
@@ -38,6 +42,8 @@ export function incrToNextLevel(match: Match) {
 }
 
 export function incrPlayerToNextLevel(match: Match, playerId: string) {
+    if (match.players[playerId] === undefined)
+        return;
     incrPlayerLevel(match.players, playerId);
 }
 
@@ -45,6 +51,9 @@ export function isMatchReadyToStart(match: Match) {
     return match.nbPlayers === config.NB_PLAYER_PER_MATCH;
 }
 
+/**
+ * Check if games for a match is timeout to eliminate player at this level.
+ */
 export function checkTimeouts(match: Match) { // TODO: optimize this
     match.games.forEach(game => {
         if (game.closingTime > 0) {
