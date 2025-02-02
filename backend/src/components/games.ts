@@ -3,14 +3,13 @@ import { countNeighbors } from "../utils/gridHelpers";
 
 export type Bombs = Set<string>;
 
-
-export class Game {
+export default class Game {
   id: number;
   grid: Grid;
   solvedGrid: Grid;
   bombs: Bombs;
   timer: number;
-  // closingTime: number;
+  closingTime: number;
 
   constructor(id: number) {
     this.id = id;
@@ -19,6 +18,7 @@ export class Game {
     this.solvedGrid = data.solveGrid;
     this.bombs = data.bombs;
     this.timer = this.getTimer(id);
+    this.closingTime = 0;
     this.selectStartCell(this.grid, this.solvedGrid);
   }
 
