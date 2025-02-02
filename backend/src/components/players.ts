@@ -1,38 +1,42 @@
 export interface Player {
-  name: string;
-  match: number;
-  level: number;
-  progress: number;
-  eliminated: boolean;
+    name: string;
+    match: number;
+    level: number;
+    progress: number;
+    eliminated: boolean;
 }
 
 export type Players = Record<string, Player>;
 
 export function addPlayer(players: Players, id: string, name: string, matchId: number) {
-  players[id] = {name: name, match: matchId, level: 0, progress: 0, eliminated: false };
+    players[id] = {
+        name: name,
+        match: matchId,
+        level: 0,
+        progress: 0,
+        eliminated: false,
+    };
 }
 
 export function removePlayer(players: Players, id: string) {
-  delete players[id];
+    delete players[id];
 }
 
 export function getAllPlayers(players: Players) {
-  return players;
+    return players;
 }
 
 export function getPlayer(players: Players, id: string) {
-  return players[id];
+    return players[id];
 }
 
 export function setPlayerEliminated(players: Players, id: string) {
-  if (players[id] === undefined)
-    return;
-  players[id].eliminated = true;
+    if (players[id] === undefined) return;
+    players[id].eliminated = true;
 }
 
 export function incrPlayerLevel(players: Players, id: string) {
-  if (players[id] === undefined)
-    return;
-  players[id].level++;
-  players[id].progress = 0;
+    if (players[id] === undefined) return;
+    players[id].level++;
+    players[id].progress = 0;
 }

@@ -17,5 +17,8 @@
   },
   "dependencies": {
     "concurrently": "^9.1.2"
+  },
+  "resolutions": {
+    "semver": "^7.5.2"
   }
 }
