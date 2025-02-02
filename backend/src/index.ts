@@ -7,7 +7,7 @@ import { config } from "./config/constants";
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173" }
+  cors: { origin: "*" }
 });
 
 io.on("connection", (socket: Socket) => {
@@ -19,8 +19,8 @@ io.on("connection", (socket: Socket) => {
     if (match === undefined) // player already in a queue
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
-    socket.emit("updateQueue", {count: match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH});
-    if (canLaunchMatch(match.id)){
+    socket.emit("updateQueue", { count: match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH });
+    if (canLaunchMatch(match.id)) {
       console.log(`Start match ${match.id}`);
       const initialGameState = startMatch(match.id);
       io.emit("matchFound", initialGameState); // TODO: don't send to every player connect
@@ -31,7 +31,7 @@ io.on("connection", (socket: Socket) => {
     var playerId = socket.id;
     var rep = leaveMatch(playerId);
     if (rep.error || !rep.match) return;
-    io.emit("updateQueue", {count: rep.match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH}); // TODO: don't send to every player connect
+    io.emit("updateQueue", { count: rep.match.nbPlayers, nb_player_per_match: config.NB_PLAYER_PER_MATCH }); // TODO: don't send to every player connect
   });
 
   socket.on("requestGameState", () => {
@@ -51,7 +51,7 @@ io.on("connection", (socket: Socket) => {
     const result = havePlayerWinGame(socket.id, cells);
     socket.emit("gameStatus", result);
     if (result.win)
-      io.emit("timerStart", {time: 0}); // TODO: don't send to every player connect
+      io.emit("timerStart", { time: 0 }); // TODO: don't send to every player connect
   });
 
   socket.on("disconnect", () => {
