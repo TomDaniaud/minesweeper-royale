@@ -7,6 +7,7 @@
   "name": "minesweeper-royale",
   "version": "1.0.0",
   "description": "",
+  "packageManager": "pnpm@7.0.0",
   "private": true,
   "author": "Pl4y3ur",
   "license": "ISC",
