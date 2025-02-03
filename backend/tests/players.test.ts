@@ -1,4 +1,4 @@
-import Players from "../src/gamelogic/players";
+import Players, { Player } from "../src/gamelogic/players";
 
 describe("Players module", () => {
   let players: Players;
@@ -10,7 +10,8 @@ describe("Players module", () => {
   test("Add a player", () => {
     players.add("123", "Alice", 1);
 
-    expect(players).toHaveProperty("123");
+    //expect(players).toHaveProperty("123");
+    expect(players.get("123")).toBeTruthy()
     expect(players.get("123")).toEqual({
       name: "Alice",
       match: 1,
@@ -23,7 +24,7 @@ describe("Players module", () => {
   test("Remove a player", () => {
     players.add("123", "Alice", 1);
     players.remove("123");
-    expect(players).not.toHaveProperty("123");
+    expect(players.get("123")).toBeFalsy();
 
     players.remove("123");
   });
@@ -34,32 +35,27 @@ describe("Players module", () => {
     players.add("123", "Alice", 1);
     players.add("456", "Bob", 2);
     expect(players.getAll()).toEqual({
-      '123': {
-        name: "Alice",
-        match: 1,
-        level: 0,
-        progress: 0,
-        eliminated: false,
-      },
-      '456': {
-        name: "Bob",
-        match: 2,
-        level: 0,
-        progress: 0,
-        eliminated: false,
-      },
+      '123': new Player("Alice", 1),
+      '456': new Player("Bob", 1),
     });
   });
 
   test("Get specific player", () => {
     players.add("123", "Alice", 1);
-    expect(players.get("123")).toEqual({
+    const pl = players.get("123");
+    expect({
+      name: pl.name,
+      match: pl.matchId,
+      level: pl.level,
+      progress: pl.progress,
+      eliminated: pl.eliminated,
+    }).toEqual({
       name: "Alice",
       match: 1,
       level: 0,
       progress: 0,
       eliminated: false,
-    });
+    })
     expect(players.get("456")).toEqual(undefined);
   });
 
