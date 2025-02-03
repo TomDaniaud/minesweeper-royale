@@ -113,6 +113,10 @@ export function getFirstGame(playerId: string) {
     return { grid: match.games[0].grid, nb_bombs: config.NB_BOMBS };
 }
 
+export function getPlayersName(match: Match) {
+    return Object.values(match.players).map(player => player.name);
+}
+
 /**
  * Clear the variable for the tests
  */

@@ -9,6 +9,7 @@ import {
     havePlayerWinGame,
     playPlayerAction,
     startMatch,
+    getPlayersName,
 } from './matchManagers';
 import { config } from './config/constants';
 
@@ -28,8 +29,9 @@ io.on('connection', (socket: Socket) => {
             // player already in a queue
             return;
         console.log(`Add player ${playerId} into match : ${match.id}`);
-        socket.emit('updateQueue', {
-            count: match.nbPlayers,
+        io.emit('updateQueue', {
+            // TODO: don't send to every player connect
+            players: getPlayersName(match),
             nb_player_per_match: config.NB_PLAYER_PER_MATCH,
         });
         if (canLaunchMatch(match.id)) {
@@ -44,7 +46,7 @@ io.on('connection', (socket: Socket) => {
         var rep = leaveMatch(playerId);
         if (rep.error || !rep.match) return;
         io.emit('updateQueue', {
-            count: rep.match.nbPlayers,
+            players: getPlayersName(rep.match),
             nb_player_per_match: config.NB_PLAYER_PER_MATCH,
         }); // TODO: don't send to every player connect
     });

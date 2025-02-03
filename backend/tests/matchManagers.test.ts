@@ -10,6 +10,7 @@ import {
     havePlayerWinGame,
     playPlayerAction,
     getFirstGame,
+    getPlayersName,
 } from '../src/matchManagers';
 
 describe('Match Managers module', () => {
@@ -166,5 +167,17 @@ describe('Match Managers module', () => {
         expect(ret).toEqual({ grid: grid, nb_bombs: 2 });
 
         config.NB_BOMBS = originalValue;
+    });
+
+    test('Get players name of a match', () => {
+        findMatch('123', 'test');
+        expect(getPlayersName(matchs[0])).toEqual(['test']);
+
+        findMatch('456', 'test2');
+        expect(getPlayersName(matchs[0])).toEqual(['test', 'test2']);
+
+        leaveMatch('123');
+        leaveMatch('456');
+        expect(getPlayersName(matchs[0])).toEqual([]);
     });
 });
