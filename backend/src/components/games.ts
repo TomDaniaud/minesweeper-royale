@@ -19,7 +19,7 @@ export default class Game {
     this.bombs = data.bombs;
     this.timer = this.getTimer(id);
     this.closingTime = 0;
-    this.selectStartCell(this.grid, this.solvedGrid);
+    this.selectStartCell();
   }
 
   private getTimer(id: number) {
@@ -39,32 +39,32 @@ export default class Game {
       } while (bombs.has(pos));
       bombs.add(pos);
     }
-    const solveGrid: Grid = Array(config.GRID_SIZE)
+    const solvedGrid: Grid = Array(config.GRID_SIZE)
       .fill(null)
       .map((_, i) =>
         Array(config.GRID_SIZE)
           .fill(0)
           .map((_, j) => countNeighbors(i, j, bombs))
       );
-    return { grid, bombs, solveGrid };
+    return { grid, bombs, solveGrid: solvedGrid };
   }
 
-  private selectStartCell(grid: Grid, solvedGrid: Grid) {
+  private selectStartCell() {
     var choice = [];
     for (let i = 0; i < config.GRID_SIZE; i++) {
       for (let j = 0; j < config.GRID_SIZE; j++) {
-        if (solvedGrid[i][j] === 0) choice.push([i, j]);
+        if (this.solvedGrid[i][j] === 0) choice.push([i, j]);
       }
     }
     var [x, y] = choice[Math.floor(Math.random() * choice.length)];
-    this.getCells(solvedGrid, x, y).forEach(cell => {
-      grid[cell.x][cell.y] = cell.value;
+    this.getCells(x, y).forEach(cell => {
+      this.grid[cell.x][cell.y] = cell.value;
     });
   }
 
-  private getCells(solvedGrid: Grid, x: number, y: number) {
-    if (solvedGrid[x][y] !== 0) {
-      return [{ x, y, value: solvedGrid[x][y] }];
+  private getCells(x: number, y: number) {
+    if (this.solvedGrid[x][y] !== 0) {
+      return [{ x, y, value: this.solvedGrid[x][y] }];
     }
     var res = [];
     var stack: [number, number][] = [[x, y]];
@@ -72,7 +72,7 @@ export default class Game {
     var nx: number, ny: number, cell: number, dx: number, dy: number;
     while (stack.length) {
       [nx, ny] = stack.pop()!;
-      cell = solvedGrid[nx][ny];
+      cell = this.solvedGrid[nx][ny];
       if (visited.has(`${nx},${ny}`))
         continue;
       res.push({ x: nx, y: ny, value: cell });
@@ -90,21 +90,21 @@ export default class Game {
     return res;
   }
 
-  public isGameWin(bombs: Bombs, cells: String[]) {
+  public isWin(cells: String[]) {
     var cellsSet = new Set<String>(cells);
-    if (bombs.size !== cellsSet.size) return false;
-    for (let cell of bombs) {
+    if (this.bombs.size !== cellsSet.size) return false;
+    for (let cell of this.bombs) {
       if (!cellsSet.has(cell)) return false;
     }
     return true;
   }
 
-  public revealCells(bombs: Bombs, solvedGrid: Grid, x: number, y: number) {
+  public revealCells(x: number, y: number) {
     if (x >= config.GRID_SIZE || y >= config.GRID_SIZE || x < 0 || y < 0)
       return [];
-    if (bombs.has(`${x},${y}`))
+    if (this.bombs.has(`${x},${y}`))
       return [];
-    return this.getCells(solvedGrid, x, y);
+    return this.getCells(x, y);
   }
 }
 // gbtg

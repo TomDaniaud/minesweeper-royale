@@ -1,70 +1,72 @@
 import { config } from "../config/constants";
 import Game from "./games";
-import { Players, addPlayer, getPlayer, incrPlayerLevel, removePlayer, setPlayerEliminated } from "./players";
+import PlayerHandler from "./players";
 
 type Games = Game[];
 
-export class Match {
+export default class Match {
     id: number;
     games: Games;
-    players: Players;
-    nbPlayers: number
+    players: PlayerHandler;
     curLevel: number;
     launch: boolean;
 
     constructor(id: number) {
         this.id = id;
         this.games = [];
-        this.players = {};
+        this.players = new PlayerHandler();
         this.curLevel = 0;
-        this.nbPlayers = 0;
         this.launch = false;
         this.games.push(new Game(this.curLevel));
     }
 
+    public getGame(level: number): Game | undefined {
+        if (level && level >= 0 && level <= this.curLevel) {
+            return this.games[level]
+        }
+    }
 
-    public addPlayerInMatch(match: Match, playerId: string, playerName: string) {
-        if (match.players[playerId] !== undefined)
+
+    public addPlayerInMatch(playerId: string, playerName: string) {
+        if (this.players.getPlayer(playerId) !== undefined)
             return;
-        addPlayer(match.players, playerId, playerName, match.id);
-        match.nbPlayers++;
+        this.players.addPlayer(playerId, playerName, this.id);
     }
 
-    public removePlayerInMatch(match: Match, playerId: string) {
-        if (match.players[playerId] === undefined)
+    public removePlayerInMatch(playerId: string) {
+        if (this.players.getPlayer(playerId) === undefined)
             return;
-        removePlayer(match.players, playerId);
-        match.nbPlayers--;
+        this.players.removePlayer(playerId);
     }
 
-    public incrToNextLevel(match: Match) {
-        match.games[match.curLevel].closingTime = Date.now();
-        match.curLevel++;
-        match.games.push(new Game(match.curLevel));
+    public incrToNextLevel() {
+        this.games[this.curLevel].closingTime = Date.now();
+        this.curLevel++;
+        this.games.push(new Game(this.curLevel));
     }
 
-    public incrPlayerToNextLevel(match: Match, playerId: string) {
-        if (match.players[playerId] === undefined)
+    public incrPlayerToNextLevel(playerId: string) {
+        if (this.players.getPlayer(playerId) === undefined)
             return;
-        incrPlayerLevel(match.players, playerId);
+        this.players.incrPlayerLevel(playerId);
     }
 
-    public isMatchReadyToStart(match: Match) {
-        return match.nbPlayers === config.NB_PLAYER_PER_MATCH;
+    public isMatchReadyToStart() {
+        return this.players.nbPlayer === config.NB_PLAYER_PER_MATCH && this.launch === false;
     }
 
     /**
      * Check if games for a match is timeout to eliminate player at this level.
      */
-    public checkTimeouts(match: Match) { // TODO: optimize this
-        match.games.forEach(game => {
+    public checkTimeouts() { // TODO: optimize this
+        this.games.forEach(game => {
             if (game.closingTime > 0) {
                 const elapsedTime = (Date.now() - game.closingTime) / 1000;
                 if (elapsedTime > game.timer) {
-                    Object.keys(match.players).forEach(playerId => {
-                        var player = getPlayer(match.players, playerId);
+                    Object.keys(this.players.getAllPlayers()).forEach(playerId => {
+                        var player = this.players.getPlayer(playerId);
                         if (!player.eliminated && player.level === game.id) {
-                            setPlayerEliminated(match.players, playerId);
+                            this.players.setPlayerEliminated(playerId);
                         }
                     });
                 }

@@ -14,21 +14,23 @@ class Player {
   }
 };
 
-export class PlayerHandler {
-  name: string;
+export default class PlayerHandler {
+  nbPlayer: number
   players: Record<string, Player>;
 
-  constructor(name: string) {
-    this.name = name;
+  constructor() {
+    this.nbPlayer = 0;
     this.players = {};
   }
 
   public addPlayer(id: string, name: string, matchId: number) {
     this.players[id] = new Player(name, matchId);
+    this.nbPlayer++;
   }
 
   public removePlayer(id: string) {
     delete this.players[id];
+    this.nbPlayer--;
   }
 
   public getAllPlayers() {

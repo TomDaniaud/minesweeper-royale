@@ -1,5 +1,5 @@
 import { config, Grid } from "../src/config/constants";
-import { matchs, playerAssigment, clearMatchs, findMatch, leaveMatch, startMatch, canLaunchMatch, havePlayerWinGame, playPlayerAction, getFirstGame } from "../src/matchManagers";
+import { this.matchs, this.playerAssigment, clearMatchs, findMatch, leaveMatch, startMatch, canLaunchMatch, havePlayerWinGame, playPlayerAction, getFirstGame } from "../src/matchManagers";
 
 describe("Match Managers module", () => {
     let grid: Grid = [[-1, 1, 0, 0],
@@ -21,37 +21,37 @@ describe("Match Managers module", () => {
 
     test("Find a match for a player", () => {
         var ret = findMatch("123", "test");
-        expect(ret).toBe(matchs[0]);
-        expect(matchs.length).toEqual(1);
-        expect(playerAssigment["123"]).toEqual(0);
-        expect(matchs[0].nbPlayers).toEqual(1);
+        expect(ret).toBe(this.matchs[0]);
+        expect(this.matchs.length).toEqual(1);
+        expect(this.playerAssigment["123"]).toEqual(0);
+        expect(this.matchs[0].nbPlayers).toEqual(1);
 
         ret = findMatch("123", "test");
         expect(ret).toEqual(undefined);
-        expect(matchs.length).toEqual(1);
-        expect(playerAssigment["123"]).toEqual(0);
-        expect(matchs[0].nbPlayers).toEqual(1);
+        expect(this.matchs.length).toEqual(1);
+        expect(this.playerAssigment["123"]).toEqual(0);
+        expect(this.matchs[0].nbPlayers).toEqual(1);
 
-        matchs[0].launch = true;
+        this.matchs[0].launch = true;
         ret = findMatch('456', 'test2');
-        expect(ret).toBe(matchs[1]);
-        expect(matchs.length).toEqual(2);
-        expect(playerAssigment["456"]).toEqual(1);
+        expect(ret).toBe(this.matchs[1]);
+        expect(this.matchs.length).toEqual(2);
+        expect(this.playerAssigment["456"]).toEqual(1);
     });
 
     test("Removes player from his current match", () => {
         var ret = leaveMatch("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        playerAssigment['123'] = 9;
+        this.playerAssigment['123'] = 9;
         ret = leaveMatch("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
         findMatch("123", "test");
         ret = leaveMatch("123");
-        expect(ret).toEqual({ match: matchs[0] });
-        expect(playerAssigment["123"]).toEqual(undefined);
-        expect(matchs[0].nbPlayers).toEqual(0);
+        expect(ret).toEqual({ match: this.matchs[0] });
+        expect(this.playerAssigment["123"]).toEqual(undefined);
+        expect(this.matchs[0].nbPlayers).toEqual(0);
     });
 
     test("Start a match", () => {
@@ -60,7 +60,7 @@ describe("Match Managers module", () => {
 
         findMatch("123", "test");
         ret = startMatch(0);
-        expect(matchs[0].launch).toEqual(true);
+        expect(this.matchs[0].launch).toEqual(true);
         expect(ret).toEqual({ roomId: 0 });
     });
 
@@ -88,7 +88,7 @@ describe("Match Managers module", () => {
         var ret = havePlayerWinGame("123", []);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        playerAssigment['123'] = 9;
+        this.playerAssigment['123'] = 9;
         ret = havePlayerWinGame("123", []);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
@@ -97,11 +97,11 @@ describe("Match Managers module", () => {
         ret = havePlayerWinGame("123", []);
         expect(ret).toEqual({ win: false });
 
-        var bombs: string[] = Array.from(matchs[0].games[0].bombs);
+        var bombs: string[] = Array.from(this.matchs[0].games[0].bombs);
         ret = havePlayerWinGame("123", bombs);
-        expect(ret).toEqual({ win: true, grid: matchs[0].games[1].grid });
+        expect(ret).toEqual({ win: true, grid: this.matchs[0].games[1].grid });
 
-        matchs[0].players['123'].eliminated = true;
+        this.matchs[0].players['123'].eliminated = true;
         ret = havePlayerWinGame('123', []);
         expect(ret).toEqual({ eliminated: true });
     });
@@ -110,7 +110,7 @@ describe("Match Managers module", () => {
         var ret = playPlayerAction("123", 0, 0);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        playerAssigment['123'] = 9;
+        this.playerAssigment['123'] = 9;
         ret = playPlayerAction("123", 0, 0);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
@@ -119,17 +119,17 @@ describe("Match Managers module", () => {
 
         const originalValue = config.GRID_SIZE;
         (config as any).GRID_SIZE = 4;
-        matchs[0].games[0].bombs = bombs;
-        matchs[0].games[0].grid = grid;
-        matchs[0].games[0].solvedGrid = solvedGrid;
+        this.matchs[0].games[0].bombs = bombs;
+        this.matchs[0].games[0].grid = grid;
+        this.matchs[0].games[0].solvedGrid = solvedGrid;
 
         ret = playPlayerAction("123", 3, 0);
         expect(ret).toEqual({ cells: [{ x: 3, y: 0, value: 1 }] })
 
         ret = playPlayerAction('123', 0, 0);
         expect(ret).toEqual({ eliminated: true });
-        expect(playerAssigment).not.toHaveProperty('123');
-        expect(matchs[0].players['123'].eliminated).toEqual(true);
+        expect(this.playerAssigment).not.toHaveProperty('123');
+        expect(this.matchs[0].players['123'].eliminated).toEqual(true);
 
         config.GRID_SIZE = originalValue;
     });
@@ -138,7 +138,7 @@ describe("Match Managers module", () => {
         var ret = getFirstGame("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        playerAssigment['123'] = 9;
+        this.playerAssigment['123'] = 9;
         ret = getFirstGame("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
@@ -147,9 +147,9 @@ describe("Match Managers module", () => {
 
         const originalValue = config.NB_BOMBS;
         (config as any).NB_BOMBS = 2;
-        matchs[0].games[0].bombs = bombs;
-        matchs[0].games[0].grid = grid;
-        matchs[0].games[0].solvedGrid = solvedGrid;
+        this.matchs[0].games[0].bombs = bombs;
+        this.matchs[0].games[0].grid = grid;
+        this.matchs[0].games[0].solvedGrid = solvedGrid;
         var ret = getFirstGame("123");
         expect(ret).toEqual({ grid: grid, nb_bombs: 2 })
 
