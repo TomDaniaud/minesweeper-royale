@@ -22,7 +22,7 @@ io.on("connection", (socket: Socket) => {
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
     socket.emit("updateQueue", {
-      count: match.players.nbPlayer,
+      count: match.players.nb,
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     });
 
@@ -38,7 +38,7 @@ io.on("connection", (socket: Socket) => {
     const rep = matchHandler.leaveMatch(playerId);
     if (rep.error || !rep.match) return;
     io.emit("updateQueue", {
-      count: rep.match.players.nbPlayer,
+      count: rep.match.players.nb,
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     }); // TODO: don't send to every player connect
   });

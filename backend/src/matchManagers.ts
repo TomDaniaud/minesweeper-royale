@@ -1,4 +1,4 @@
-import Match from "./components/matchs";
+import Match from "./gamelogic/matchs";
 import { config } from "./config/constants";
 
 
@@ -37,7 +37,7 @@ export default class MatchHandler {
             this.matchs.push(new Match(this.matchs.length));
         if (this.playerAssigment[playerId] !== undefined && this.getMatch(this.playerAssigment[playerId])?.launch === false)
             return;
-        this.matchs[this.matchs.length - 1].addPlayerInMatch(playerId, playerName);
+        this.matchs[this.matchs.length - 1].addPlayer(playerId, playerName);
         this.playerAssigment[playerId] = this.matchs.length - 1;
         return this.matchs[this.matchs.length - 1];
     }
@@ -50,7 +50,7 @@ export default class MatchHandler {
         if (matchId === null) return { error: "NO_MATCH" };
         const match = this.getMatch(matchId);
         if (match === null) return { error: "NO_MATCH" };
-        match.removePlayerInMatch(playerId);
+        match.removePlayer(playerId);
         delete this.playerAssigment[playerId];
         return { match };
     }
@@ -65,7 +65,7 @@ export default class MatchHandler {
     public canLaunchMatch(matchId: number): { error: string } | boolean {
         var match = this.getMatch(matchId);
         if (match === null) return { error: "NO_MATCH" };
-        return match.isMatchReadyToStart();
+        return match.isReadyToStart();
     }
 
     public hasPlayerWinGame(playerId: string, lastCells: String[]) {
@@ -73,7 +73,7 @@ export default class MatchHandler {
         if (matchId === null) return { error: "NO_MATCH" };
         const match = this.getMatch(matchId);
         if (match === null) return { error: "NO_MATCH" };
-        var player = match.players.getPlayer(playerId);
+        var player = match.players.get(playerId);
         if (player.eliminated)
             return { eliminated: true };
         var level = player.level;
@@ -92,12 +92,12 @@ export default class MatchHandler {
         if (matchId === null) return { error: "NO_MATCH" };
         const match = this.getMatch(matchId);
         if (match === null) return { error: "NO_MATCH" };
-        var player = match.players.getPlayer(playerId);
+        var player = match.players.get(playerId);
         var game = match.games[player.level];
         var cells = game.revealCells(x, y);
         if (cells.length === 0 || player.eliminated === true) { // Player lost
             delete this.playerAssigment[playerId];
-            match.players.setPlayerEliminated(playerId);
+            match.players.setEliminated(playerId);
             return { eliminated: true };
         }
         return { cells };
