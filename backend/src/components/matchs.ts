@@ -21,9 +21,7 @@ export default class Match {
     }
 
     public getGame(level: number): Game | undefined {
-        if (level && level >= 0 && level <= this.curLevel) {
-            return this.games[level]
-        }
+        return this.games[level]
     }
 
 

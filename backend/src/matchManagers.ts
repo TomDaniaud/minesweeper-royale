@@ -77,7 +77,8 @@ export default class MatchHandler {
         if (player.eliminated)
             return { eliminated: true };
         var level = player.level;
-        var win = match.getGame(level)!.isWin(lastCells);
+        const game = match.getGame(level)
+        var win = game ? game.isWin(lastCells) : false;
         if (!win)
             return { win: false };
         if (match.curLevel === level)
