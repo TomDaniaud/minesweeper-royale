@@ -51,13 +51,13 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("revealCell", ({ x, y }) => {
     console.log(`Received revealCell event from ${socket.id}: (${x}, ${y})`);
-    const result = playPlayerAction(socket.id, x, y);
+    const result = matchHandler.playPlayerAction(socket.id, x, y);
     socket.emit("gameUpdate", result);
   });
 
   socket.on("isGridValid", ({ cells }) => {
     console.log(`Received isGridValid event from ${socket.id}`);
-    const result = havePlayerWinGame(socket.id, cells);
+    const result = matchHandler.hasPlayerWinGame(socket.id, cells);
     socket.emit("gameStatus", result);
     if (result.win)
       io.emit("timerStart", { time: 0 }); // TODO: don't send to every player connect
@@ -65,7 +65,7 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("disconnect", () => {
     var playerId = socket.id;
-    leaveMatch(playerId);
+    matchHandler.leaveMatch(playerId);
     console.log(`Player disconnected: ${socket.id}`);
   });
 });
