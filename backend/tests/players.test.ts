@@ -12,13 +12,7 @@ describe("Players module", () => {
 
     //expect(players).toHaveProperty("123");
     expect(players.get("123")).toBeTruthy()
-    expect(players.get("123")).toEqual({
-      name: "Alice",
-      match: 1,
-      level: 0,
-      progress: 0,
-      eliminated: false,
-    });
+    expect(players.get("123")).toEqual(new Player("Alice", 1));
   });
 
   test("Remove a player", () => {
@@ -45,13 +39,13 @@ describe("Players module", () => {
     const pl = players.get("123");
     expect({
       name: pl.name,
-      match: pl.matchId,
+      matchId: pl.matchId,
       level: pl.level,
       progress: pl.progress,
       eliminated: pl.eliminated,
     }).toEqual({
       name: "Alice",
-      match: 1,
+      matchId: 1,
       level: 0,
       progress: 0,
       eliminated: false,
