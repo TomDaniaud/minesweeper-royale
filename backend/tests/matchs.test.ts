@@ -23,7 +23,6 @@ describe('Matchs module', () => {
             players: {},
             nbPlayers: 0,
             curLevel: 0,
-            curLevel: 0,
             launch: false,
         });
         expect(match.games.length).toEqual(1);

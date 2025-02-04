@@ -104,6 +104,7 @@ export default class MatchHandler {
     }
 
     public getFirstGame(playerId: string) {
+        //return the first grid of the match
         const matchId = this.getPlayerAssignment(playerId);
         if (matchId === null) return { error: "NO_MATCH" };
         const match = this.getMatch(matchId);
