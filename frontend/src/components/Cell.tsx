@@ -18,9 +18,9 @@ const Cell = ({ cell, onClick, onContextMenu }) => {
           g.drawRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
           g.endFill();
         }}
-        interactive
-        pointerdown={onClick}
-        rightclick={onContextMenu}
+        eventMode="static"
+        onpointerdown={onClick}
+        onrightclick={onContextMenu}
       />
       {
         !(cellValue === -1 || cellValue === 0 || cellValue === 9) && (
