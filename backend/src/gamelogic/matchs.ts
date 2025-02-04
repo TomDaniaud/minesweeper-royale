@@ -24,7 +24,6 @@ export default class Match {
         return this.games[level]
     }
 
-
     public addPlayer(playerId: string, playerName: string) {
         if (this.players.get(playerId) !== undefined)
             return;

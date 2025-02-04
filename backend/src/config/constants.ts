@@ -1,7 +1,7 @@
 export const config = {
     GRID_SIZE: 10,
     NB_BOMBS: 5,
-    NB_PLAYER_PER_MATCH: 2,
+    NB_PLAYER_PER_MATCH: 3,
 };
 export const DIRS: [number, number][] = [
     [-1, -1],
