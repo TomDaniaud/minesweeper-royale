@@ -15,23 +15,23 @@ export class Player {
 };
 
 export default class PlayerHandler {
-  nb: number
+  length: number
   players: Record<string, Player>;
 
   constructor() {
-    this.nb = 0;
+    this.length = 0;
     this.players = {};
   }
 
   public add(idPlayer: string, namePlayeur: string, matchId: number) {
     this.players[idPlayer] = new Player(namePlayeur, matchId);
-    this.nb++;
+    this.length++;
   }
 
   public remove(idPlayer: string) {
-    if (!this.nb) return;
+    if (!this.length) return;
     delete this.players[idPlayer];
-    this.nb--;
+    this.length--;
   }
 
   public getAll() {

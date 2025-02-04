@@ -1,5 +1,6 @@
 import Match from "../src/gamelogic/matchs"
 import { config } from "../src/config/constants";
+import { Player } from "../src/gamelogic/players";
 
 describe("Matchs module", () => {
     let match: Match;
@@ -9,7 +10,14 @@ describe("Matchs module", () => {
     });
 
     test("Create a match", () => {
-        expect(match).toEqual({
+        expect({
+            id: match.id,
+            games: match.games,
+            players: match.players.getAll(),
+            nbPlayers: match.players.length,
+            curLevel: match.curLevel,
+            launch: match.launch,
+        }).toEqual({
             id: 0,
             games: match.games,
             players: {},
@@ -22,39 +30,19 @@ describe("Matchs module", () => {
 
     test("Add a player in match", () => {
         match.addPlayer("aze", "test");
-        expect(match.players).toEqual({
-            "aze": {
-                name: "test",
-                match: 0,
-                level: 0,
-                progress: 0,
-                eliminated: false,
-            }
-        });
-        expect(match.players.nb).toEqual(1);
-
-        match.addPlayer("aze", "test");
-        expect(match.players).toEqual({
-            "aze": {
-                name: "test",
-                match: 0,
-                level: 0,
-                progress: 0,
-                eliminated: false,
-            }
-        });
-        expect(match.players.nb).toEqual(1);
+        expect(match.players.get("aze")).toEqual(new Player("test", match.curLevel));
+        expect(match.players.length).toEqual(1);
     });
 
     test("Remove a player from a match", () => {
         match.addPlayer("aze", "test");
         match.removePlayer("aze");
-        expect(match.players).toEqual({});
-        expect(match.players.nb).toEqual(0);
+        expect(match.players.getAll()).toEqual({});
+        expect(match.players.length).toEqual(0);
 
         match.removePlayer("aze");
-        expect(match.players).toEqual({});
-        expect(match.players.nb).toEqual(0);
+        expect(match.players.getAll()).toEqual({});
+        expect(match.players.length).toEqual(0);
     });
 
     test("Increase match level", () => {

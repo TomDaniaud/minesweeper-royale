@@ -32,7 +32,7 @@ export default class MatchHandler {
     /**
      * Find a match to join for a player
      */
-    public findMatch(playerId: string, playerName: string) {
+    public joinMatch(playerId: string, playerName: string) {
         if (this.matchs.length === 0 || this.matchs[this.matchs.length - 1].launch === true)
             this.matchs.push(new Match(this.matchs.length));
         if (this.playerAssigment[playerId] !== undefined && this.getMatch(this.playerAssigment[playerId])?.launch === false)

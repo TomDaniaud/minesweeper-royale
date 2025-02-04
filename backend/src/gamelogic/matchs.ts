@@ -50,7 +50,7 @@ export default class Match {
     }
 
     public isReadyToStart() {
-        return this.players.nb === config.NB_PLAYER_PER_MATCH && this.launch === false;
+        return this.players.length === config.NB_PLAYER_PER_MATCH && this.launch === false;
     }
 
     /**

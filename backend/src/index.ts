@@ -17,12 +17,12 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("joinQueue", (playerName) => {
     var playerId = socket.id;
-    var match = matchHandler.findMatch(playerId, playerName);
+    var match = matchHandler.joinMatch(playerId, playerName);
     if (match === undefined) // player already in a queue
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
     socket.emit("updateQueue", {
-      count: match.players.nb,
+      count: match.players.length,
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     });
 
@@ -38,7 +38,7 @@ io.on("connection", (socket: Socket) => {
     const rep = matchHandler.leaveMatch(playerId);
     if (rep.error || !rep.match) return;
     io.emit("updateQueue", {
-      count: rep.match.players.nb,
+      count: rep.match.players.length,
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     }); // TODO: don't send to every player connect
   });

@@ -30,7 +30,7 @@ describe("Players module", () => {
     players.add("456", "Bob", 2);
     expect(players.getAll()).toEqual({
       '123': new Player("Alice", 1),
-      '456': new Player("Bob", 1),
+      '456': new Player("Bob", 2),
     });
   });
 

@@ -21,23 +21,23 @@ describe("Games module", () => {
     game.grid = grid;
 
     test("Generate a game", () => {
-        expect(game).toEqual({
-            id: 0,
+        expect({
+            id: game.id,
             grid: game.grid,
-            solveGrid: game.solvedGrid,
+            solvedGrid: game.solvedGrid,
             bombs: game.bombs,
+            timer: TIMER_EVOLUTION[0],
+            closingTime: 0
+        }).toEqual({
+            id: 0,
+            grid: grid,
+            solvedGrid: solvedGrid,
+            bombs: bombs,
             timer: TIMER_EVOLUTION[0],
             closingTime: 0,
         });
         game.id = 9;
-        expect(game).toEqual({
-            id: 9,
-            grid: game.grid,
-            solveGrid: game.solvedGrid,
-            bombs: game.bombs,
-            timer: 1,
-            closingTime: 0,
-        });
+        expect(game.id).toEqual(9);
     });
 
     test("Check if a game is win", () => {

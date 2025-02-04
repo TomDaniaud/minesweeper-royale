@@ -4,16 +4,14 @@ export type Bombs = Set<string>;
 
 export default class Game {
   id: number;
-  grid: Grid;
-  solvedGrid: Grid;
+  grid!: Grid;
+  solvedGrid!: Grid;
   bombs: Bombs;
   timer: number;
   closingTime: number;
 
   constructor(id: number) {
     this.id = id;
-    this.grid = Array(config.GRID_SIZE);
-    this.solvedGrid = Array(config.GRID_SIZE);
     this.bombs = new Set();
     this.closingTime = 0;
     this.timer = this.getTimer(id);
@@ -28,7 +26,10 @@ export default class Game {
   }
 
   private initializeGrid() {
-    this.grid.map(() => Array(config.GRID_SIZE).fill(-1));
+    this.grid = Array.from({ length: config.GRID_SIZE }, () => Array(config.GRID_SIZE).fill(-1));
+    this.solvedGrid = Array.from({ length: config.GRID_SIZE }, (_, i) =>
+      Array.from({ length: config.GRID_SIZE }, (_, j) => this.countNeighbors(i, j))
+    );
 
     for (let i = 0; i < config.NB_BOMBS; i++) {
       let pos: string;
@@ -37,10 +38,6 @@ export default class Game {
       } while (this.bombs.has(pos));
       this.bombs.add(pos);
     }
-
-    this.solvedGrid = Array.from({ length: config.GRID_SIZE }, (_, i) =>
-      Array.from({ length: config.GRID_SIZE }, (_, j) => this.countNeighbors(i, j))
-    );
   }
 
   private selectStartCell() {

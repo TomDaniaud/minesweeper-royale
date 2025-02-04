@@ -28,20 +28,20 @@ describe("Match Managers module", () => {
     });
 
     test("Find a match for a player", () => {
-        var ret = matchHandler.findMatch("123", "test");
+        var ret = matchHandler.joinMatch("123", "test");
         expect(ret).toBe(matchHandler.matchs[0]);
         expect(matchHandler.matchs.length).toEqual(1);
         expect(matchHandler.playerAssigment["123"]).toEqual(0);
-        expect(matchHandler.matchs[0].players.nb).toEqual(1);
+        expect(matchHandler.matchs[0].players.length).toEqual(1);
 
-        ret = matchHandler.findMatch("123", "test");
+        ret = matchHandler.joinMatch("123", "test");
         expect(ret).toEqual(undefined);
         expect(matchHandler.matchs.length).toEqual(1);
         expect(matchHandler.playerAssigment["123"]).toEqual(0);
-        expect(matchHandler.matchs[0].players.nb).toEqual(1);
+        expect(matchHandler.matchs[0].players.length).toEqual(1);
 
         matchHandler.matchs[0].launch = true;
-        ret = matchHandler.findMatch('456', 'test2');
+        ret = matchHandler.joinMatch('456', 'test2');
         expect(ret).toBe(matchHandler.matchs[1]);
         expect(matchHandler.matchs.length).toEqual(2);
         expect(matchHandler.playerAssigment["456"]).toEqual(1);
@@ -55,18 +55,18 @@ describe("Match Managers module", () => {
         ret = matchHandler.leaveMatch("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch("123", "test");
+        matchHandler.joinMatch("123", "test");
         ret = matchHandler.leaveMatch("123");
         expect(ret).toEqual({ match: matchHandler.matchs[0] });
         expect(matchHandler.playerAssigment["123"]).toEqual(undefined);
-        expect(matchHandler.matchs[0].players.nb).toEqual(0);
+        expect(matchHandler.matchs[0].players.length).toEqual(0);
     });
 
     test("Start a match", () => {
         var ret = matchHandler.startMatch(0);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch("123", "test");
+        matchHandler.joinMatch("123", "test");
         ret = matchHandler.startMatch(0);
         expect(matchHandler.matchs[0].launch).toEqual(true);
         expect(ret).toEqual({ roomId: 0 });
@@ -76,12 +76,12 @@ describe("Match Managers module", () => {
         var ret = matchHandler.canLaunchMatch(0);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch("123", "test");
+        matchHandler.joinMatch("123", "test");
         ret = matchHandler.canLaunchMatch(0);
         expect(ret).toEqual(false);
 
         for (let i = 0; i < config.NB_PLAYER_PER_MATCH - 1; i++) {
-            matchHandler.findMatch(`${i}`, `test${i}`);
+            matchHandler.joinMatch(`${i}`, `test${i}`);
         }
         ret = matchHandler.canLaunchMatch(0);
         expect(ret).toEqual(true);
@@ -100,7 +100,7 @@ describe("Match Managers module", () => {
         ret = matchHandler.hasPlayerWinGame("123", []);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch('123', 'test');
+        matchHandler.joinMatch('123', 'test');
         matchHandler.startMatch(0);
         ret = matchHandler.hasPlayerWinGame("123", []);
         expect(ret).toEqual({ win: false });
@@ -122,7 +122,7 @@ describe("Match Managers module", () => {
         ret = matchHandler.playPlayerAction("123", 0, 0);
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch('123', 'test');
+        matchHandler.joinMatch('123', 'test');
         matchHandler.startMatch(0);
 
         const originalValue = config.GRID_SIZE;
@@ -150,8 +150,8 @@ describe("Match Managers module", () => {
         ret = matchHandler.getFirstGame("123");
         expect(ret).toEqual({ error: 'NO_MATCH' });
 
-        matchHandler.findMatch('123', 'test');
-        matchHandler.startMatch(0);
+        matchHandler.joinMatch('123', 'test');
+        expect(matchHandler.startMatch(0)).toEqual({ roomId: 0 });
 
         const originalValue = config.NB_BOMBS;
         (config as any).NB_BOMBS = 2;
