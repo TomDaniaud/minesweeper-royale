@@ -87,6 +87,11 @@ describe("Match Managers module", () => {
             for (let i = 0; i < config.NB_PLAYER_PER_MATCH - 1; i++) {
                 matchHandler.joinMatch(`${i}`, `test${i}`);
             }
+
+            // Vérifiez l'état du match et des joueurs
+            expect(matchHandler.getMatch(0)).toBeDefined();
+            expect(matchHandler.getMatch(0)?.players.length).toEqual(config.NB_PLAYER_PER_MATCH);
+
             ret = matchHandler.canLaunchMatch(0);
             expect(ret).toEqual(true);
 
