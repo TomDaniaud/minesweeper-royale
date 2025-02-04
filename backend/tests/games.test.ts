@@ -47,7 +47,7 @@ describe("Games module", () => {
         expect(game.isWin(['0,0', '2,1'])).toEqual(true);
     });
 
-    test("Reveal list of cells after clicking at (x, y)", () => {
+    test('Reveal list of cells after clicking at (x, y)', () => {
         const originalValue = config.GRID_SIZE;
         (config as any).GRID_SIZE = 4;
         expect(game.revealCells(0, 0)).toEqual([]);

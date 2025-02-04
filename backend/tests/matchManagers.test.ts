@@ -82,14 +82,16 @@ describe("Match Managers module", () => {
 
         for (let i = 0; i < config.NB_PLAYER_PER_MATCH - 1; i++) {
             matchHandler.joinMatch(`${i}`, `test${i}`);
+            for (let i = 0; i < config.NB_PLAYER_PER_MATCH - 1; i++) {
+                matchHandler.joinMatch(`${i}`, `test${i}`);
+            }
+            ret = matchHandler.canLaunchMatch(0);
+            expect(ret).toEqual(true);
+
+            matchHandler.startMatch(0);
+            ret = matchHandler.canLaunchMatch(0);
+            expect(ret).toEqual(false);
         }
-        ret = matchHandler.canLaunchMatch(0);
-        expect(ret).toEqual(true);
-
-        matchHandler.startMatch(0);
-        ret = matchHandler.canLaunchMatch(0);
-        expect(ret).toEqual(false);
-
     });
 
     test("Check if a player win a game", () => {
@@ -109,6 +111,9 @@ describe("Match Managers module", () => {
         ret = matchHandler.hasPlayerWinGame("123", bombs);
         expect(ret).toEqual({ win: true, grid: matchHandler.matchs[0].games[1].grid });
 
+        matchHandler.getMatch(0)!.players.get('123').eliminated = true;
+        ret = matchHandler.hasPlayerWinGame('123', []);
+        expect(ret).toEqual({ eliminated: true });
         matchHandler.matchs[0].players.get('123').eliminated = true;
         ret = matchHandler.hasPlayerWinGame('123', []);
         expect(ret).toEqual({ eliminated: true });
@@ -137,6 +142,10 @@ describe("Match Managers module", () => {
         ret = matchHandler.playPlayerAction('123', 0, 0);
         expect(ret).toEqual({ eliminated: true });
         expect(matchHandler.playerAssigment).not.toHaveProperty('123');
+        expect(matchHandler.getMatch(0)!.players.get('123').eliminated).toEqual(true);
+        ret = matchHandler.playPlayerAction('123', 0, 0);
+        expect(ret).toEqual({ eliminated: true });
+        expect(matchHandler.playerAssigment).not.toHaveProperty('123');
         expect(matchHandler.matchs[0].players.get('123').eliminated).toEqual(true);
 
         config.GRID_SIZE = originalValue;
@@ -162,5 +171,17 @@ describe("Match Managers module", () => {
         expect(ret).toEqual({ grid: grid, nb_bombs: 2 })
 
         config.NB_BOMBS = originalValue;
+    });
+
+    test('Get players name of a match', () => {
+        matchHandler.joinMatch('123', 'test');
+        expect(matchHandler.getMatch(0)?.players.getPlayersName()).toEqual(['test']);
+
+        matchHandler.joinMatch('456', 'test2');
+        expect(matchHandler.getMatch(0)?.players.getPlayersName()).toEqual(['test', 'test2']);
+
+        matchHandler.leaveMatch('123');
+        matchHandler.leaveMatch('456');
+        expect(matchHandler.getMatch(0)?.players.getPlayersName()).toEqual([]);
     });
 });

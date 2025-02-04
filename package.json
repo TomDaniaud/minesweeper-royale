@@ -8,6 +8,7 @@
   "name": "minesweeper-royale",
   "version": "1.0.0",
   "description": "",
+  "packageManager": "pnpm@9.15.4",
   "private": true,
   "author": "Pl4y3ur",
   "license": "ISC",
@@ -18,5 +19,8 @@
   },
   "dependencies": {
     "concurrently": "^9.1.2"
+  },
+  "resolutions": {
+    "semver": "^7.5.2"
   }
 }

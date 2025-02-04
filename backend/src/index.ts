@@ -22,7 +22,7 @@ io.on("connection", (socket: Socket) => {
       return;
     console.log(`Add player ${playerId} into match : ${match.id}`);
     socket.emit("updateQueue", {
-      count: match.players.length,
+      players: match.players.getPlayersName(),
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     });
 
@@ -38,7 +38,7 @@ io.on("connection", (socket: Socket) => {
     const rep = matchHandler.leaveMatch(playerId);
     if (rep.error || !rep.match) return;
     io.emit("updateQueue", {
-      count: rep.match.players.length,
+      players: rep.match.players.getPlayersName(),
       nb_player_per_match: config.NB_PLAYER_PER_MATCH
     }); // TODO: don't send to every player connect
   });
@@ -70,4 +70,4 @@ io.on("connection", (socket: Socket) => {
   });
 });
 
-server.listen(3000, () => console.log("Server running on port 3000"));
+server.listen(3000, () => console.log('Server running on port 3000'));

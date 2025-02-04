@@ -1,6 +1,6 @@
 import Players, { Player } from "../src/gamelogic/players";
 
-describe("Players module", () => {
+describe('Players module', () => {
   let players: Players;
 
   beforeEach(() => {

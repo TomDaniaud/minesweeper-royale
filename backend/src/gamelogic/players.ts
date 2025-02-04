@@ -38,6 +38,10 @@ export default class PlayerHandler {
     return this.players;
   }
 
+  public getPlayersName(): string[] {
+    return Object.values(this.players).map((pl: Player) => pl.name)
+  }
+
   public get(idPlayer: string) {
     return this.players[idPlayer];
   }

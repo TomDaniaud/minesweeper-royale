@@ -2,7 +2,7 @@ import Match from "../src/gamelogic/matchs"
 import { config } from "../src/config/constants";
 import { Player } from "../src/gamelogic/players";
 
-describe("Matchs module", () => {
+describe('Matchs module', () => {
     let match: Match;
 
     beforeEach(() => {
@@ -22,6 +22,7 @@ describe("Matchs module", () => {
             games: match.games,
             players: {},
             nbPlayers: 0,
+            curLevel: 0,
             curLevel: 0,
             launch: false,
         });
